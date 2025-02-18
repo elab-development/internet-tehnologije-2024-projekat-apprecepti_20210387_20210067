@@ -17,10 +17,12 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    //polja koja se mogu menjati(tj. mogu im se masovno dodeljivati vrednosti)
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +46,28 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    //korisnik moze imati(uneti) vise recepta
+    public function recipes()
+    {
+        return $this->hasMany(Recipe::class, 'autor_id');
+    }
+    //korisnik moze imati vise komentara
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+    //definisaje mnogostruke veze koriscenjem belongsToMany relacije i pivot tabele 
+    
+    //korisnik moze imati vise recepta favorita i jedan recept moze biti favorit vise kosrisnika
+    public function favorites()
+    {
+        return $this->belongsToMany(Recipe::class, 'favorites')->withTimestamps();
+    }
+
+    public function ratings()
+    {
+        return $this->belongsToMany(Recipe::class, 'ratings')->withPivot('ocena')->withTimestamps();
     }
 }
