@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'role' => $this->role,
-
+            'bio'=>$this->bio,
             // Lista omiljenih recepata korisnika
             'omiljeni_recepti' => $this->favorites->map(function ($recipe) {
                 return [
