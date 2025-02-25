@@ -12,6 +12,8 @@ class CategoryResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+
+     public static $wrap='categories';
     public function toArray(Request $request): array
     {
         return [
