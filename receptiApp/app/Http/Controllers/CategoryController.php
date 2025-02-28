@@ -17,7 +17,6 @@ class CategoryController extends Controller
     //dodavanje nove kategorije
     public function store(Request $request)
     {
-        //$this->authorize('admin-only'); // Osiguravamo da samo admin može dodati kategoriju
 
         $validated = $request->validate([
             'naziv' => 'required|string|unique:categories,naziv|max:255',
@@ -31,7 +30,6 @@ class CategoryController extends Controller
     //Ažuriranje kategorije (samo admin)
     public function update(Request $request, $id)
     {
-        //$this->authorize('admin-only');
 
         $category = Category::findOrFail($id);
 
@@ -47,7 +45,6 @@ class CategoryController extends Controller
     //Brisanje kategorije (samo admin) 
     public function destroy($id)
     {
-        //$this->authorize('admin-only');
 
         $category = Category::findOrFail($id);
         $category->delete();
@@ -57,6 +54,8 @@ class CategoryController extends Controller
 
     
     //Dohvatanje recepata unutar određene kategorije
+    //Laravel automatski zna da treba da pretraži pivot tabelu recipe_categories 
+    //da bi pronašao sve recepte u određenoj kategoriji na osnovu onoga sto smo definisali u modelima
     public function getRecipesByCategory($id)
     {
         $category = Category::findOrFail($id);
