@@ -6,6 +6,7 @@ use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
@@ -25,6 +26,7 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
+
         $request->validate([
             'recipe_id' => 'required|exists:recipes,id',
             'sadrzaj' => 'required|string|max:500'
@@ -32,8 +34,7 @@ class CommentController extends Controller
 
         $comment = Comment::create([
             'recipe_id' => $request->recipe_id,
-            //PRIVREMENO!!!!
-            'user_id' => 1,
+            'user_id' => Auth::id(),
             'sadrzaj' => $request->sadrzaj
         ]);
 
@@ -44,9 +45,8 @@ class CommentController extends Controller
     public function update(Request $request, $id)
     {
         $comment = Comment::findOrFail($id);
-        //if (auth()->id() !== $comment->user_id)
-        //PRIVREMENO!!!!!!
-        if ($comment->user_id == 1) {
+
+        if (Auth::id() !== $comment->user_id) {
             return response()->json(['message' => 'Nemate dozvolu da izmenite ovaj komentar.'], 403);
         }
 
@@ -64,9 +64,17 @@ class CommentController extends Controller
     {
         $comment = Comment::findOrFail($id);
 
-        //if (auth()->id() !== $comment->user_id && auth()->user()->role !== 'admin') {
+        // Proveri da li je korisnik vlasnik komentara
+        $isCommentOwner = Auth::id() === $comment->user_id;
 
-        if ($comment->user_id !== 1) {
+        // Proveri da li je korisnik vlasnik recepta
+        $isRecipeOwner = Auth::id() === $comment->recipe->user_id;
+
+        // Proveri da li je korisnik admin
+        $isAdmin = Auth::user()->role === 'admin';
+
+        // Ako korisnik nije admin, autor komentara ili autor recepta nije dozvoljeno brisanje
+        if (!$isCommentOwner && !$isRecipeOwner && !$isAdmin) {
             return response()->json(['message' => 'Nemate dozvolu da obrišete ovaj komentar.'], 403);
         }
 
@@ -79,8 +87,8 @@ class CommentController extends Controller
     {
         $recipe = Recipe::findOrFail($recipeId);
 
-        //if (auth()->user()->role !== 'admin' && auth()->id() !== $recipe->autor_id) {
-        if ($recipe->user_id !== 1) {
+        // Samo korisnik koji je kreirao recept i admin mogu da obisu sve komentare za taj recept
+        if (Auth::user()->role !== 'admin' && Auth::id() !== $recipe->autor_id) {
             return response()->json(['message' => 'Nemate dozvolu da obrišete komentare ovog recepta.'], 403);
         }
 
@@ -95,5 +103,4 @@ class CommentController extends Controller
         $comments = Comment::where('recipe_id', $recipeId)->with('user')->get();
         return CommentResource::collection($comments);
     }
-
 }
