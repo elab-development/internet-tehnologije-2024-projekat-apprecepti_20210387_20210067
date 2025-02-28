@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\RecipeResource;
+use App\Models\Ingredient;
 use App\Models\Recipe;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,8 @@ class RecipeController extends Controller
             'categories' => 'array',
             'categories.*' => 'exists:categories,id',
             'ingredients' => 'array',
-            'ingredients.*.id' => 'exists:ingredients,id',
+            'ingredients.*.id' => 'nullable|exists:ingredients,id',
+            'ingredients.*.naziv' => 'nullable|string|max:255',
             'ingredients.*.kolicina' => 'required|numeric|min:1',
             'ingredients.*.mera' => 'required|string|max:20'
         ]);
@@ -48,18 +50,32 @@ class RecipeController extends Controller
             $recipe->categories()->attach($request->input('categories'));
         }
 
-        // Povezujemo recept sa sastojcima i unosimo količinu i meru u pivot tabelu
+        // Povezujemo recept sa sastojcima
         if ($request->has('ingredients')) {
-            foreach ($request->input('ingredients') as $ingredient) {
-                $recipe->ingredients()->attach($ingredient['id'], [
-                    'kolicina' => $ingredient['kolicina'],
-                    'mera' => $ingredient['mera']
-                ]);
+            foreach ($request->input('ingredients') as $ingredientData) {
+                $ingredientId = $ingredientData['id'] ?? null;
+                $ingredientNaziv = $ingredientData['naziv'] ?? null;
+
+                if ($ingredientId) {
+                    // Sastojak već postoji, povezujemo ga sa receptom
+                    $recipe->ingredients()->attach($ingredientId, [
+                        'kolicina' => $ingredientData['kolicina'],
+                        'mera' => $ingredientData['mera']
+                    ]);
+                } elseif ($ingredientNaziv) {
+                    // Sastojak ne postoji, kreiramo ga i povezujemo sa receptom
+                    $newIngredient = Ingredient::firstOrCreate(['naziv' => $ingredientNaziv]);
+                    $recipe->ingredients()->attach($newIngredient->id, [
+                        'kolicina' => $ingredientData['kolicina'],
+                        'mera' => $ingredientData['mera']
+                    ]);
+                }
             }
         }
 
         return new RecipeResource($recipe);
     }
+
 
     public function show($id)
     {
@@ -71,14 +87,23 @@ class RecipeController extends Controller
             },
             'comments'
         ])->findOrFail($id);
-    
+
+
+        // Povećavamo broj pregleda samo ako korisnik nije već pregledao recept u ovoj sesiji
+        $sessionKey = 'viewed_recipe_' . $id;
+
+        if (!session()->has($sessionKey)) {
+            $recipe->increment('pregledi'); // Povećavamo broj pregleda
+            session()->put($sessionKey, true); // Beležimo da je korisnik već pregledao recept
+        }
+
         return new RecipeResource($recipe);
     }
 
     public function update(Request $request, $id)
     {
         $recipe = Recipe::findOrFail($id);
-    
+
         $validatedData = $request->validate([
             'naziv' => 'sometimes|string|max:255',
             'opis' => 'sometimes|string',
@@ -87,41 +112,57 @@ class RecipeController extends Controller
             'categories' => 'array',
             'categories.*' => 'exists:categories,id',
             'ingredients' => 'array',
-            'ingredients.*.id' => 'exists:ingredients,id',
+            'ingredients.*.id' => 'nullable|exists:ingredients,id',
+            'ingredients.*.naziv' => 'nullable|string|max:255',
             'ingredients.*.kolicina' => 'required|numeric|min:1',
             'ingredients.*.mera' => 'required|string|max:20'
         ]);
-    
+
         $recipe->update($validatedData);
-    
-        // Ažuriranje kategorija i sastojaka u pivot tabelama
+
+        // Ažuriranje kategorija
         if ($request->has('categories')) {
             $recipe->categories()->sync($request->input('categories'));
         }
-    
+
+        // Ažuriranje sastojaka
         if ($request->has('ingredients')) {
             $recipe->ingredients()->detach(); // Prvo brišemo postojeće zapise
-            foreach ($request->input('ingredients') as $ingredient) {
-                $recipe->ingredients()->attach($ingredient['id'], [
-                    'kolicina' => $ingredient['kolicina'],
-                    'mera' => $ingredient['mera']
-                ]);
+            foreach ($request->input('ingredients') as $ingredientData) {
+                $ingredientId = $ingredientData['id'] ?? null;
+                $ingredientNaziv = $ingredientData['naziv'] ?? null;
+
+                if ($ingredientId) {
+                    // Povezujemo postojeći sastojak
+                    $recipe->ingredients()->attach($ingredientId, [
+                        'kolicina' => $ingredientData['kolicina'],
+                        'mera' => $ingredientData['mera']
+                    ]);
+                } elseif ($ingredientNaziv) {
+                    // Kreiramo novi sastojak ako ne postoji
+                    $newIngredient = Ingredient::firstOrCreate(['naziv' => $ingredientNaziv]);
+                    $recipe->ingredients()->attach($newIngredient->id, [
+                        'kolicina' => $ingredientData['kolicina'],
+                        'mera' => $ingredientData['mera']
+                    ]);
+                }
             }
         }
-    
+
         return new RecipeResource($recipe);
     }
+
 
     public function destroy($id)
     {
         $recipe = Recipe::findOrFail($id);
-    
+
         // Brišemo povezane zapise iz pivot tabela pre nego što obrišemo recept
         $recipe->categories()->detach();
         $recipe->ingredients()->detach();
-    
+
         $recipe->delete();
-    
+
         return response()->json(['message' => 'Recept obrisan!']);
     }
 
@@ -141,15 +182,32 @@ class RecipeController extends Controller
 
         return RecipeResource::collection($recipes);
     }
-    
-    //prikazuje recepte filtrirane po sastojcima
-    public function filterByIngredient($ingredientId)
+
+
+    // Filtriranje recepta po sastojcima(moguce je uneti vise sastojaka)
+    public function filterByIngredients(Request $request)
     {
-        $recipes = Recipe::whereHas('ingredients', function ($query) use ($ingredientId) {
-            $query->where('ingredient_id', $ingredientId);
-        })->with(['categories', 'ingredients', 'author', 'comments'])->get();
+        $ingredientIds = $request->input('ingredients');
+
+        if (!$ingredientIds || !is_array($ingredientIds)) {
+            return response()->json(['message' => 'Morate uneti listu sastojaka.'], 400);
+        }
+
+        // Filtriramo recepte koji sadrže SVE navedene sastojke
+
+        // Ako postoji samo jedan sastojak
+        if (count($ingredientIds) === 1) {
+            $recipes = Recipe::whereHas('ingredients', function ($query) use ($ingredientIds) {
+                $query->where('ingredient_id', $ingredientIds[0]);
+            })->get();
+        } else {
+            // Filtriramo recepte koji sadrže SVE navedene sastojke
+            $recipes = Recipe::whereHas('ingredients', function ($query) use ($ingredientIds) {
+                $query->whereIn('ingredient_id', $ingredientIds);
+            }, '=', count($ingredientIds))->get();
+        }
 
         return RecipeResource::collection($recipes);
     }
-
+    
 }
