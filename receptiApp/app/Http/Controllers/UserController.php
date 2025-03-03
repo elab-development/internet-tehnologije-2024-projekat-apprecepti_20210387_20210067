@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -25,7 +26,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role'=>'user',
+            'role' => 'user',
             'bio' => $request->bio,
         ]);
 
@@ -35,7 +36,7 @@ class UserController extends Controller
     //prikaz odredjenog korisnika
     public function show(string $id)
     {
-        $user=User::findOrFail($id);
+        $user = User::findOrFail($id);
         return new UserResource($user);
     }
 
@@ -62,5 +63,21 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json(['message' => 'Korisnik, njegovi recepti i komentari su obrisani!']);
+    }
+
+    // Vraća recepte koje je korisnik dodao u omiljene
+    public function userFavorites()
+    {
+        $user = Auth::user();
+
+        // Proveravamo da li korisnik ima omiljene recepte
+        if($user->favorites->count()==0){
+            return response()->json(['message'=>'Nemate omiljene recepte', 'favorites'=>[] ]);
+        }
+
+        // Dohvatamo omiljene recepte sa podacima o autoru
+        $favorites = $user->favorites->with('author')->get();
+
+        return response()->json($favorites);
     }
 }
