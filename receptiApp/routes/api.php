@@ -44,12 +44,25 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':user,admin'])->grou
 
     // Korisnik i admin mogu dodavati i ažurirati recepte
     Route::resource('/recipes', RecipeController::class)->except(['index', 'show']);
+
+    //Korisnik i admin mogu da daju(azuriraju) ocene receptu
+    Route::post('/recipes/{id}/rate', [RecipeController::class, 'rateRecipe']);
+
+    //Korisnik i admin mogu da vide, dodaju i uklanjaju recepte iz omiljenih
+    Route::post('recipes/{id}/favorite',[RecipeController::class,'addToFavorites']);
+    Route::delete('recipes/{id}/favorite', [RecipeController::class, 'removeFromFavorites']);
+    Route::get('/user/favorites', [UserController::class, 'userFavorites']);
 });
 
 // SVE ULOGE(ADMIN, KORISNIK, GOST) IMAJU PRISTUP OVIM RUTAMA
-Route::get('/recipes/{id}/comments', [CommentController::class, 'getCommentsForRecipe']);
-Route::get('/categories/{id}/recipes', [CategoryController::class, 'getRecipesByCategory']);
-Route::get('/recipes/popular', [RecipeController::class, 'popular']);
+Route::get('/recipes/{id}/comments', [CommentController::class, 'getCommentsForRecipe']);//Prikaz svih komentara recepta
+
+Route::get('/recipes/{id}/rating', [RecipeController::class, 'getAverageRecipeRating']);//Prikaz prosecne ocene za recept
+Route::get('/recipes/{id}/ratings', [RecipeController::class, 'getRecipeRatings']);//Prikaz svih ocena za odredjeni recept
+Route::get('/recipes/{id}/favorites-count', [RecipeController::class, 'favoritesCount']);//Dohvatanje broja korisnika koji su oznacili recept kao omiljen
+
+Route::get('/categories/{id}/recipes', [CategoryController::class, 'getRecipesByCategory']);//Filtriranje recepta po kategorijama
+Route::get('/recipes/popular', [RecipeController::class, 'popular']);//Prikaz recepta sa najvise pregeleda
 Route::get('/recipes/category/{id}', [RecipeController::class, 'filterByCategory']);
 Route::get('/recipes/filter-by-ingredients', [RecipeController::class, 'filterByIngredients']);//Parametre saljemo putem query-ja u body delu kako bi omogucili real-time i pretragu po VISE sastojka
 Route::resource('/recipes', RecipeController::class)->only(['index', 'show']);
