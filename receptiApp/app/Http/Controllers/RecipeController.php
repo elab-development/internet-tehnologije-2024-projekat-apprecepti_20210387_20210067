@@ -5,16 +5,27 @@ namespace App\Http\Controllers;
 use App\Http\Resources\RecipeResource;
 use App\Models\Ingredient;
 use App\Models\Recipe;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 //index()	Dohvata sve recepte
 //store()	Kreira novi recept
 //show()	Dohvata pojedinačan recept
 //update()	Ažurira recept
 //destroy()	Briše recept
+
 //popular()	Dohvata najpopularnije recepte
 //filterByCategory()	Dohvata recepte po kategoriji
 //filterByIngredient()	Dohvata recepte po sastojcima
+
+//addToFavorites() Ubacivanje recepata u omiljene
+//removeFromFavorites() Uklanjanje recepata iz omiljenih
+//favoritesCount() Dohvatanje broja korisnika koji su oznacili recepte kao omiljene
+//rateRecipe() Dodavanje(azuriranje) ocene receptu
+//getRecipeRatings() Prikaz svih ocena nekog recepta
+//getAverageRecipeRating() Prikaz prosecne ocene recepta
+
 
 
 class RecipeController extends Controller
@@ -209,5 +220,87 @@ class RecipeController extends Controller
 
         return RecipeResource::collection($recipes);
     }
-    
+
+    //Dodavanje recepta u omiljene
+    public function addToFavorites($id)
+    {
+        $user = Auth::user();
+        $recipe = Recipe::findOrFail($id);
+
+        if (!$user->favorites()->where('recipe_id', $id)->exists()) {
+            $user->favorites()->attach($id);
+            return response()->json(['message' => 'Recept dodat u omiljene.']);
+        }
+
+        return response()->json(['message' => 'Recept je već u omiljenima.'], 400);
+    }
+
+    //Uklanjanje recepta iz omiljenih
+    public function removeFromFavorites($id)
+    {
+        $user = Auth::user();
+        $recipe = Recipe::findOrFail($id);
+
+        if ($user->favorites()->where('recipe_id', $id)->exists()) {
+            $user->favorites()->detach($id);
+            return response()->json(['message' => 'Recept uklonjen iz omiljenih.']);
+        }
+
+        return response()->json(['message' => 'Recept nije bio u omiljenima.'], 400);
+    }
+
+    //Prikaz broja korisnika koji su oznacili recept kao omiljen
+    public function favoritesCount($id)
+    {
+        $recipe = Recipe::findOrFail($id);
+        $count = $recipe->favorites()->count();
+
+        return response()->json(['favorites_count' => $count]);
+    }
+
+    //Davanje/azuriranje ocene receptu
+    public function rateRecipe(Request $request, $id)
+    {
+        $user = Auth::user();
+        $recipe = Recipe::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'ocena' => 'required|integer|min:1|max:5'
+        ]);
+
+        $user->ratings()->syncWithoutDetaching([
+            $id => ['ocena' => $validatedData['ocena']]
+        ]);
+
+        return response()->json(['message' => 'Ocena je uspešno dodata(ažurirana).']);
+    }
+
+    // Prikaz korisnika i njihovih ocena za odredjeni recept
+    public function getRecipeRatings($id)
+    {
+        $recipe = Recipe::with(['ratedByUsers' => function ($query) {
+            $query->select('users.id', 'users.name', 'ratings.ocena')
+                ->orderByDesc('ratings.ocena');
+        }])->findOrFail($id);
+
+        return response()->json([
+            'recipe' => $recipe->naziv,
+            'ratings' => $recipe->ratedByUsers->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'ocena' => $user->pivot->ocena, // Samo ocena iz pivot tabele
+                ];
+            }),
+        ]);
+    }
+
+    // Izracunavanje prosecne ocene za recept
+    public function getAverageRecipeRating($id)
+    {
+        $recipe = Recipe::findOrFail($id);
+        $averageRating = $recipe->ratedByUsers()->avg('ratings.ocena');
+
+        return response()->json(['average_rating' => round($averageRating, 1)]);
+    }
 }
