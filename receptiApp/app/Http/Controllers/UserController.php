@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecipeResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -66,18 +67,23 @@ class UserController extends Controller
     }
 
     // Vraća recepte koje je korisnik dodao u omiljene
+    
+/**
+ * @phpstan-ignore
+ */
+     
     public function userFavorites()
     {
         $user = Auth::user();
 
         // Proveravamo da li korisnik ima omiljene recepte
-        if($user->favorites->count()==0){
-            return response()->json(['message'=>'Nemate omiljene recepte', 'favorites'=>[] ]);
+        if ($user->favorites()->count() == 0) {
+            return response()->json(['message' => 'Nemate omiljene recepte', 'favorites' => []]);
         }
 
         // Dohvatamo omiljene recepte sa podacima o autoru
-        $favorites = $user->favorites->with('author')->get();
+        $favorites = $user->favorites()->with('author')->get();
 
-        return response()->json($favorites);
+        return RecipeResource::collection($favorites);
     }
 }
