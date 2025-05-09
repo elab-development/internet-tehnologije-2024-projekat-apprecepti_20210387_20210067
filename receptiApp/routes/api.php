@@ -48,6 +48,9 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':user,admin'])->grou
     //Korisnik i admin mogu da daju(azuriraju) ocene receptu
     Route::post('/recipes/{id}/rate', [RecipeController::class, 'rateRecipe']);
 
+    //Korisnik i admin mogu da vide svoje recepte
+    Route::get('/users/{id}/recipes', [UserController::class, 'userRecipes']);
+
     //Korisnik i admin mogu da vide, dodaju i uklanjaju recepte iz omiljenih
     Route::post('recipes/{id}/favorite',[RecipeController::class,'addToFavorites']);
     Route::delete('recipes/{id}/favorite', [RecipeController::class, 'removeFromFavorites']);

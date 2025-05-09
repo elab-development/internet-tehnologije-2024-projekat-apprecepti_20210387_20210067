@@ -86,4 +86,12 @@ class UserController extends Controller
 
         return RecipeResource::collection($favorites);
     }
+
+    //prikaz svih recepata nekog korisnika
+    public function userRecipes($userId)
+    {
+        $user = User::with('recipes')->findOrFail($userId);
+        return response()->json($user->recipes);
+    }
+
 }

@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Collection $favorites
+ * @method \Illuminate\Database\Eloquent\Relations\BelongsToMany favorites()
+ */
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
