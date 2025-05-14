@@ -303,4 +303,39 @@ class RecipeController extends Controller
 
         return response()->json(['average_rating' => round($averageRating, 1)]);
     }
+
+    //filtriranje po kategorijama i sastojcima
+    public function filterByCategoryAndIngredients(Request $request)
+    {
+        $categoryId = $request->query('category');
+        $ingredientIds = $request->query('ingredients', []);
+    
+        if (!is_array($ingredientIds)) {
+            $ingredientIds = [$ingredientIds];
+        }
+    
+        try {
+            $recipes = Recipe::whereHas('categories', function ($q) use ($categoryId) {
+                    $q->where('categories.id', $categoryId);
+                })
+                // ovo sada filtrira po SVIM sastojcima
+                ->where(function ($query) use ($ingredientIds) {
+                    foreach ($ingredientIds as $ingredientId) {
+                        $query->whereHas('ingredients', function ($q) use ($ingredientId) {
+                            $q->where('ingredients.id', $ingredientId);
+                        });
+                    }
+                })
+                ->with(['categories', 'ingredients'])
+                ->get();
+    
+            return response()->json(['data' => $recipes]);
+    
+        } catch (\Throwable $e) {
+            logger()->error('Greška u filtriranju: ' . $e->getMessage());
+            return response()->json(['error' => 'Greška na serveru.'], 500);
+        }
+    }
+    
+    
 }

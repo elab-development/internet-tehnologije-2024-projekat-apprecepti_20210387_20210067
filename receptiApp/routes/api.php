@@ -29,8 +29,6 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(fun
 
 // RUTE KOJIMA MOGU PRISTUPITI ULOGOVANI KORISNIK I ADMIN 
 Route::middleware(['auth:sanctum', RoleMiddleware::class . ':user,admin'])->group(function () {
-    // Admin i korisnik mogu da vide sve dostupne kategorije
-    Route::get('/categories', [CategoryController::class, 'index']);
 
     // Korisnik i admin mogu dodavati, menjati komentare i brisati komentare
     Route::post('/comments', [CommentController::class, 'store']);
@@ -38,9 +36,6 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':user,admin'])->grou
     Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
     Route::delete('/recipes/{id}/comments', [CommentController::class, 'deleteAllCommentsForRecipe']);
 
-    //Korisnik i admin mogu videti sve sastojke i pretrazivati ih po imenu
-    Route::get('/ingredients', [IngredientController::class, 'index']);
-    Route::get('/ingredients/search', [IngredientController::class, 'search']);
 
     // Korisnik i admin mogu dodavati i ažurirati recepte
     Route::resource('/recipes', RecipeController::class)->except(['index', 'show']);
@@ -58,12 +53,18 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':user,admin'])->grou
 });
 
 // SVE ULOGE(ADMIN, KORISNIK, GOST) IMAJU PRISTUP OVIM RUTAMA
+//Svi mogu videti sve sastojke i pretrazivati ih po imenu
+Route::get('/ingredients', [IngredientController::class, 'index']);
+Route::get('/ingredients/search', [IngredientController::class, 'search']);
+
+Route::get('/categories', [CategoryController::class, 'index']);// Svi mogu da vide sve dostupne kategorije
 Route::get('/recipes/{id}/comments', [CommentController::class, 'getCommentsForRecipe']);//Prikaz svih komentara recepta
 
 Route::get('/recipes/{id}/rating', [RecipeController::class, 'getAverageRecipeRating']);//Prikaz prosecne ocene za recept
 Route::get('/recipes/{id}/ratings', [RecipeController::class, 'getRecipeRatings']);//Prikaz svih ocena za odredjeni recept
 Route::get('/recipes/{id}/favorites-count', [RecipeController::class, 'favoritesCount']);//Dohvatanje broja korisnika koji su oznacili recept kao omiljen
 
+Route::get('/recipes/filter', [RecipeController::class, 'filterByCategoryAndIngredients']);//Filtriranje po kategorijama i sastojcima
 Route::get('/categories/{id}/recipes', [CategoryController::class, 'getRecipesByCategory']);//Filtriranje recepta po kategorijama
 Route::get('/recipes/popular', [RecipeController::class, 'popular']);//Prikaz recepta sa najvise pregeleda
 Route::get('/recipes/category/{id}', [RecipeController::class, 'filterByCategory']);
