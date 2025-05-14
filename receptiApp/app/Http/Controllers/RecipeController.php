@@ -336,6 +336,19 @@ class RecipeController extends Controller
             return response()->json(['error' => 'Greška na serveru.'], 500);
         }
     }
-    
+    //proverava da li je korisnik vec smestio recept u omiljene
+    public function isFavorited($id)
+    {
+        $recipe = Recipe::findOrFail($id);
+        $isFavorited = false;
+
+        if (Auth::check()) {
+            $user = Auth::user();
+            $isFavorited = $recipe->favoritedBy()->where('user_id', $user->id)->exists();
+        }
+
+        return response()->json(['is_favorited' => $isFavorited]);
+    }
+
     
 }

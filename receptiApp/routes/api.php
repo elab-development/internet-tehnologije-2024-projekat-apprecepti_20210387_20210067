@@ -46,10 +46,12 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':user,admin'])->grou
     //Korisnik i admin mogu da vide svoje recepte
     Route::get('/users/{id}/recipes', [UserController::class, 'userRecipes']);
 
-    //Korisnik i admin mogu da vide, dodaju i uklanjaju recepte iz omiljenih
+    //Korisnik i admin mogu da vide, dodaju i uklanjaju recepte iz omiljenih, i da proveravaju da li je vec u omiljenim
     Route::post('recipes/{id}/favorite',[RecipeController::class,'addToFavorites']);
     Route::delete('recipes/{id}/favorite', [RecipeController::class, 'removeFromFavorites']);
     Route::get('/user/favorites', [UserController::class, 'userFavorites']);
+    Route::get('/recipes/{id}/is-favorited', [RecipeController::class, 'isFavorited']);
+
 });
 
 // SVE ULOGE(ADMIN, KORISNIK, GOST) IMAJU PRISTUP OVIM RUTAMA
