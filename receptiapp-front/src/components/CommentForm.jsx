@@ -4,6 +4,7 @@ import axios from 'axios';
 const CommentForm = ({ recipeId, token, onCommentAdded }) => {
   const [text, setText] = useState('');
 
+  //Dodavanje komentara
   const handleSubmit = async () => {
     if (!text.trim()) {
       alert('Komentar ne može biti prazan.');

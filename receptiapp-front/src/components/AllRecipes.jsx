@@ -9,18 +9,17 @@ const AllRecipes = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
-  // ✅ Učitaj sve kategorije i sastojke samo jednom kad se komponenta učita
+  //Učitaj sve kategorije i sastojke samo jednom kad se komponenta učita
   useEffect(() => {
-    // Kategorije
+    // Vracemo sve kategorije iz baze
     axios.get('/categories')
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : res.data.data;
-        console.log('Kategorije:', data);
         setAllCategories(data || []);
       })
       .catch(() => console.error('Greška pri dohvatanju kategorija'));
 
-    // Sastojci
+    // Vracamo sve sastojke iz baze
     axios.get('/ingredients')
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : res.data.data;
@@ -29,7 +28,7 @@ const AllRecipes = () => {
       .catch(() => console.error('Greška pri dohvatanju sastojaka'));
   }, []);
 
-  // ✅ Funkcija za učitavanje recepata (po potrebi filtrirano)
+  // Funkcija za učitavanje recepata (po potrebi filtrirano)
   const fetchRecipes = async () => {
     try {
       let url = '/recipes';
@@ -71,12 +70,12 @@ const AllRecipes = () => {
   };
   
 
-  // ✅ Pozovi `fetchRecipes` svaki put kad korisnik izmeni filter
+  // Pozovi `fetchRecipes` svaki put kad korisnik izmeni filter
   useEffect(() => {
     fetchRecipes();
   }, [selectedCategory, selectedIngredients]);
 
-  // ✅ Dodaj/ukloni sastojak iz liste izabranih
+  // Dodaj/ukloni sastojak iz liste izabranih
   const handleIngredientToggle = (id) => {
     setSelectedIngredients(prev =>
       prev.includes(id)

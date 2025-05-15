@@ -1,41 +1,85 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
 
 const RecipeDetail = ({ user }) => {
   const { id } = useParams();
+  const location = useLocation();
   const [recipe, setRecipe] = useState(null);
   const [rating, setRating] = useState(null);
+  const [isFavorited, setIsFavorited] = useState(false);
   const [error, setError] = useState('');
   const token = sessionStorage.getItem('token');
 
+  //Ucitavanje odredjenog recepta iz baze
   const fetchRecipe = () => {
     axios.get(`/recipes/${id}`)
       .then(res => {
-        const data = res.data.recipes || res.data; // 👈 koristi tačan ključ
-        console.log("RECIPE:", data);
+        const data = res.data.recipes || res.data;
         setRecipe(data);
       })
       .catch(() => setError('Greška pri učitavanju recepta.'));
   };
 
+  //Provera da li je recept u omiljenim
+  const checkIfFavorited = () => {
+    //Korisnik nije prijavljen
+    if (!token) {
+      setIsFavorited(false);
+      return;
+    }
+
+    //Vraca da li je korisnik vec smestio recept u omiljene
+    axios.get(`/recipes/${id}/is-favorited`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(res => {
+      setIsFavorited(res.data.is_favorited);
+    })
+    .catch(() => {
+      setIsFavorited(false);
+    });
+  };
+
   useEffect(() => {
     fetchRecipe();
+
+    if (location.state?.isFavorited) {
+      setIsFavorited(true); // došao iz FavoriteRecipes
+    } else {
+      checkIfFavorited(); // standardna provera
+    }
   }, [id]);
 
+  //Dodavanje recepta u omiljene
   const handleFavorite = async () => {
     try {
       await axios.post(`/recipes/${id}/favorite`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert('Recept dodat u omiljene.');
+      setIsFavorited(true); // odmah ažuriraj lokalno stanje
     } catch {
-      alert('Greška pri dodavanju u omiljene.');
+      alert('Greška pri dodavanju u omiljene');
     }
   };
 
+  //Uklanjanje recepta iz omiljenih
+  const handleUnfavorite = async () => {
+    try {
+      await axios.delete(`/recipes/${id}/favorite`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setIsFavorited(false); // odmah ažuriraj lokalno stanje
+    } catch {
+      alert('Greška pri uklanjanju iz omiljenih');
+    }
+  };
+
+  //Funkcija za ocenjivanje recepta
   const handleRating = async () => {
     try {
       await axios.post(`/recipes/${id}/rate`, { ocena: rating }, {
@@ -81,7 +125,12 @@ const RecipeDetail = ({ user }) => {
         <>
           <hr />
           <h4>Akcije</h4>
-          <button onClick={handleFavorite}>Dodaj u omiljene</button>
+
+          {isFavorited ? (
+            <button onClick={handleUnfavorite}>Ukloni iz omiljenih</button>
+          ) : (
+            <button onClick={handleFavorite}>Dodaj u omiljene</button>
+          )}
 
           <div>
             <label>Ocenite recept (1–5):</label>
@@ -115,5 +164,6 @@ const RecipeDetail = ({ user }) => {
 };
 
 export default RecipeDetail;
+
 
 

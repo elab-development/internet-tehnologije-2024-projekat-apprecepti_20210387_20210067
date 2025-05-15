@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import axios from 'axios';
 
+//postavili smo default base vrednost url adrese kako ne bismo stalno kucali pu naziv
+axios.defaults.baseURL = 'http://localhost:8000/api';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

@@ -5,6 +5,7 @@ const CommentEditForm = ({ comment, onCancel, onUpdated }) => {
   const [text, setText] = useState(comment.sadrzaj);
   const token = sessionStorage.getItem('token');
 
+  //Izmena komentara
   const handleUpdate = async () => {
     if (!text.trim()) return alert('Komentar ne može biti prazan.');
 

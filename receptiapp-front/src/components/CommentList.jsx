@@ -3,11 +3,13 @@ import axios from 'axios';
 import CommentEditForm from './CommentEditForm';
 
 const CommentList = ({ comments, user, onRefresh, recipeId }) => {
+
   const [editingId, setEditingId] = useState(null);
   const token = sessionStorage.getItem('token');
 
+  //Brisanje svog komentara
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this comment?')) return;
+    if (!window.confirm('Da li ste sigurni da želite da obrišete komentar?')) return;
 
     try {
       await axios.delete(`/comments/${id}`, {
@@ -15,48 +17,42 @@ const CommentList = ({ comments, user, onRefresh, recipeId }) => {
       });
       onRefresh();
     } catch {
-      alert('Error deleting comment');
+      alert('Greška pri brisanju komentara');
     }
   };
 
   return (
-    <div className="comment-list">
-      <h4>Comments</h4>
-
-      {!Array.isArray(comments) ? (
-        <p>Loading comments...</p>
-      ) : comments.length === 0 ? (
-        <p>No comments yet.</p>
-      ) : (
-        <ul>
-          {comments.map((k) => (
-            <li key={k.id}>
-              {editingId === k.id ? (
-                <CommentEditForm
-                  comment={k}
-                  onCancel={() => setEditingId(null)}
-                  onUpdated={() => {
-                    setEditingId(null);
-                    onRefresh();
-                  }}
-                />
-              ) : (
+    <ul>
+      {comments.map((k) => (
+        <li key={k.id}>
+          {editingId === k.id ? (
+            <CommentEditForm
+              comment={k}
+              onCancel={() => setEditingId(null)}
+              onUpdated={() => {
+                setEditingId(null);
+                onRefresh();
+              }}
+            />
+          ) : (
+            <>
+              <p>
+                <strong>{k.autor?.name || 'User'}:</strong> {k.sadrzaj}
+              </p>
+  
+              {user && k.autor && user.id === k.autor.id && (
                 <>
-                  <p><strong>{k.autor?.name || 'User'}:</strong> {k.sadrzaj}</p>
-                  {user && user.id === k.autor?.id && (
-  <>
-    <button onClick={() => setEditingId(k.id)}>Edit</button>
-    <button onClick={() => handleDelete(k.id)}>Delete</button>
-  </>
-)}
+                  <button onClick={() => setEditingId(k.id)}>Izmeni</button>
+                  <button onClick={() => handleDelete(k.id)}>Obriši</button>
                 </>
               )}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+            </>
+          )}
+        </li>
+      ))}
+    </ul>
   );
+  
 };
 
 export default CommentList;

@@ -16,10 +16,10 @@ const Login = ({ setUser }) => {
     try {
       //await- Čeka da se Promise završi i vrati rezultat
       const res = await axios.post('/login', { email, password });
-      const { access_token, ...userData } = res.data;
-      sessionStorage.setItem('user', JSON.stringify(userData));
+      const { access_token, user } = res.data;
+      sessionStorage.setItem('user', JSON.stringify(user));
       sessionStorage.setItem('token', access_token);
-      setUser(userData); 
+      setUser(user); 
       navigate('/');
     } catch {
       setError('Pogrešan email ili lozinka.');

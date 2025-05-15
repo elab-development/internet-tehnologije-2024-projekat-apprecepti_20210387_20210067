@@ -6,6 +6,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import RecipeDetail from './components/RecipeDetail';
+import FavoriteRecipes from './components/FavoriteRecipes';
+
 
 function App() {
   //cuvamo korisnika i njegove podatke 
@@ -20,6 +22,7 @@ function App() {
       <Navbar user={user} setUser={setUser} />
       <Routes>
         <Route path="/recipes/:id" element={<RecipeDetail user={user} />} />
+        <Route path="/favorites" element={<FavoriteRecipes />} />
         <Route path="/" element={<Home user={user} />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
