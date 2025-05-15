@@ -342,10 +342,12 @@ class RecipeController extends Controller
         $recipe = Recipe::findOrFail($id);
         $isFavorited = false;
 
-        if (Auth::check()) {
-            $user = Auth::user();
-            $isFavorited = $recipe->favoritedBy()->where('user_id', $user->id)->exists();
+        if (!Auth::check()) {
+            return response()->json(['is_favorited' => false]);
         }
+
+        $user = Auth::user();
+        $isFavorited = $recipe->favorites()->where('user_id', $user->id)->exists();
 
         return response()->json(['is_favorited' => $isFavorited]);
     }

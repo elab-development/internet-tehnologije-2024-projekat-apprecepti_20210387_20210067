@@ -71,6 +71,7 @@ class AuthController extends Controller
             'message' => 'Uspešno ste se prijavili.',
             'access_token' => $token,
             'token_type' => 'Bearer',
+            'user' => $user,
         ]);
     }
 
