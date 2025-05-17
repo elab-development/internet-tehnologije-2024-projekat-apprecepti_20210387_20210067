@@ -25,6 +25,9 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(fun
     Route::post('/ingredients', [IngredientController::class, 'store']);
     Route::put('/ingredients/{id}', [IngredientController::class, 'update']);
     Route::delete('/ingredients/{id}', [IngredientController::class, 'destroy']);
+
+    // Admin moze da vidi sve komentare iz baze(i brise po potrebi)
+    Route::get('/comments-all', [CommentController::class, 'allComments']);
 });
 
 // RUTE KOJIMA MOGU PRISTUPITI ULOGOVANI KORISNIK I ADMIN 

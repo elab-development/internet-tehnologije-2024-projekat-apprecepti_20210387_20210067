@@ -22,6 +22,7 @@ class CommentResource extends JsonResource
             'autor' => new UserResource($this->user),
             'recept' => new RecipeResource($this->whenLoaded('recipe')),
             'sadrzaj' => $this->sadrzaj,
+            'recipe_id' => $this->recipe_id, 
             'created_at' => $this->created_at->diffForHumans(),
         ];
     }

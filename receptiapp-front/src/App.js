@@ -7,6 +7,10 @@ import Register from './components/Register';
 import Home from './components/Home';
 import RecipeDetail from './components/RecipeDetail';
 import FavoriteRecipes from './components/FavoriteRecipes';
+import RecipeForm from './components/RecipeForm';
+import MyRecipes from './components/MyRecipes';
+import AdminPanel from './components/AdminPanel';
+import CategoryAdmin from './components/CategoryAdmin';
 
 
 function App() {
@@ -21,6 +25,11 @@ function App() {
       {/* prosledjujemo kao parametar korisnika kako bismo odredili prikaz */}
       <Navbar user={user} setUser={setUser} />
       <Routes>
+
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/moji-recepti" element={<MyRecipes />} />
+        <Route path="/recipes/create" element={<RecipeForm />} />
+        <Route path="/recipes/edit/:id" element={<RecipeForm />} />
         <Route path="/recipes/:id" element={<RecipeDetail user={user} />} />
         <Route path="/favorites" element={<FavoriteRecipes />} />
         <Route path="/" element={<Home user={user} />} />

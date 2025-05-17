@@ -13,13 +13,15 @@ class RoleMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next,$role): Response
+    //prima vise mogucih rola
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
 
         //proveravamo da li je korisnik prijavljen i da li ima trazenu ulogu
-        if (!$request->user() || $request->user()->role !== $role) {
+        if (!$request->user() || !in_array($request->user()->role, $roles)) {
             return response()->json(['message' => 'Nemate dozvolu'], 403);
         }
+    
         return $next($request);
     }
 }

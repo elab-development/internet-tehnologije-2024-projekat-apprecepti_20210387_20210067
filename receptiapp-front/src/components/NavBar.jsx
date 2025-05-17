@@ -41,8 +41,8 @@ const Navbar = ({ user, setUser }) => {
             </button>
             {showDropdown && (
               <div className="dropdown-content">
-                <Link to="/my-recipes" onClick={() => setShowDropdown(false)}>Pregledaj</Link>
-                <Link to="/my-recipes/add" onClick={() => setShowDropdown(false)}>Dodaj novi</Link>
+                <Link to="/moji-recepti" onClick={() => setShowDropdown(false)}>Pregledaj</Link>
+                <Link to="/recipes/create" onClick={() => setShowDropdown(false)}>Dodaj novi</Link>
               </div>
             )}
           </div>

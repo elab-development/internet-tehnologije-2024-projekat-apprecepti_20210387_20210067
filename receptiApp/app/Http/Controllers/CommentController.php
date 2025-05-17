@@ -62,25 +62,21 @@ class CommentController extends Controller
     //Brisanje pojedinacnog komentara
     public function destroy($id)
     {
-        $comment = Comment::findOrFail($id);
-
-        // Proveri da li je korisnik vlasnik komentara
+        $comment = Comment::with('recipe')->findOrFail($id);
+    
         $isCommentOwner = Auth::id() === $comment->user_id;
-
-        // Proveri da li je korisnik vlasnik recepta
-        $isRecipeOwner = Auth::id() === $comment->recipe->user_id;
-
-        // Proveri da li je korisnik admin
+        $isRecipeOwner = optional($comment->recipe)->user_id === Auth::id();
         $isAdmin = Auth::user()->role === 'admin';
-
-        // Ako korisnik nije admin, autor komentara ili autor recepta nije dozvoljeno brisanje
+    
         if (!$isCommentOwner && !$isRecipeOwner && !$isAdmin) {
-            return response()->json(['message' => 'Nemate dozvolu da obrišete ovaj komentar.'], 403);
+            return response()->json(['message' => 'Nemate dozvolu'], 403);
         }
-
+    
         $comment->delete();
+    
         return response()->json(['message' => 'Komentar obrisan!']);
     }
+    
 
     //Brisanje svih komentara
     public function deleteAllCommentsForRecipe($recipeId)
@@ -102,5 +98,11 @@ class CommentController extends Controller
     {
         $comments = Comment::where('recipe_id', $recipeId)->with('user')->get();
         return CommentResource::collection($comments);
+    }
+
+    //Vraca sve komentare iz baze za sve recepte
+    public function allComments()
+    {
+        return response()->json(CommentResource::collection(Comment::with('user')->latest()->get()));
     }
 }
