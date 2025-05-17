@@ -28,6 +28,9 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(fun
 
     // Admin moze da vidi sve komentare iz baze(i brise po potrebi)
     Route::get('/comments-all', [CommentController::class, 'allComments']);
+
+    // CSV eksport podataka za korisnike
+    Route::get('/admin/export-users', [UserController::class, 'exportToCsv']);
 });
 
 // RUTE KOJIMA MOGU PRISTUPITI ULOGOVANI KORISNIK I ADMIN 

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class UserController extends Controller
 {
@@ -93,5 +94,45 @@ class UserController extends Controller
         $user = User::with('recipes')->findOrFail($userId);
         return response()->json($user->recipes);
     }
+
+
+    // export podataka o korisnicima
+    public function exportToCsv()
+    {
+        $response = new StreamedResponse(function () {
+            //Otvara „output stream“ za pisanje — spremno za direktni izlaz u browser
+            $handle = fopen('php://output', 'w');
+            //Piše prvi red – to su zaglavlja CSV fajla
+            fputcsv($handle, ['ID', 'Name', 'Email', 'Broj recepata','Broj komentara', 'Poslednja aktivnost']);
+            // Učitaj korisnike sa brojem recepata
+            $users = User::withCount(['recipes', 'comments'])->get();
+            foreach ($users as $user) {
+                 // Poslednja aktivnost: uzimamo najnoviji timestamp iz recepata ili komentara
+                $lastRecipe = $user->recipes()->latest('updated_at')->first();
+                $lastComment = $user->comments()->latest('updated_at')->first();
+
+                $lastActivity = max(
+                    optional($lastRecipe)->updated_at,
+                    optional($lastComment)->updated_at
+                );
+                //upisivanje reda u csv fajl
+                fputcsv($handle, [
+                    $user->id,
+                    $user->name,
+                    $user->email,
+                    $user->recipes_count,
+                    $user->comments_count,
+                    $lastActivity ? $lastActivity->toDateTimeString() : 'N/A',
+                ]);
+            }
+            fclose($handle);
+        });
+        //Kaže browseru da šaljemo CSV fajl
+        $response->headers->set('Content-Type', 'text/csv');
+        //Browser zna da je to fajl koji treba preuzeti, i predlaže ime "users.csv"
+        $response->headers->set('Content-Disposition', 'attachment; filename="users.csv"');
+        return $response;
+    }
+
 
 }
