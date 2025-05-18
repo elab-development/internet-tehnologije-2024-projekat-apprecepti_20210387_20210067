@@ -54,7 +54,7 @@ const RecipeAdmin = () => {
               <tr key={r.id}>
                 <td>{r.id}</td>
                 <td>{r.naziv}</td>
-                <td>{r.author?.name || 'Nepoznat'}</td>
+                <td>{r.autor?.name || 'Nepoznat'}</td>
                 <td>{r.vreme_pripreme}</td>
                 <td>{r.tezina}</td>
                 <td>

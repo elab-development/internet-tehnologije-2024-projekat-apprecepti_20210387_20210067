@@ -32,7 +32,7 @@ class RecipeController extends Controller
 {
     public function index()
     {
-        $recipes = Recipe::all();
+        $recipes = Recipe::with('author')->get();
         return RecipeResource::collection($recipes);
     }
 
