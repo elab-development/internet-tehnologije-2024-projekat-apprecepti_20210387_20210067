@@ -32,6 +32,9 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(fun
     // CSV eksport podataka za korisnike
     Route::get('/admin/export-users', [UserController::class, 'exportToCsv']);
 
+    // Broj recepta mesecno
+    Route::get('/recipes/statistics/monthly', [RecipeController::class, 'recipesPerMonth']);
+
     //Prikaz svih recepta bez paginacije
     Route::get('/admin/recipes', [RecipeController::class, 'getAllRecipes']);
 });
@@ -81,3 +84,5 @@ Route::get('/recipes/popular', [RecipeController::class, 'popular']);//Prikaz re
 Route::get('/recipes/category/{id}', [RecipeController::class, 'filterByCategory']);
 Route::get('/recipes/filter-by-ingredients', [RecipeController::class, 'filterByIngredients']);//Parametre saljemo putem query-ja u body delu kako bi omogucili real-time i pretragu po VISE sastojka
 Route::resource('/recipes', RecipeController::class)->only(['index', 'show']);
+
+

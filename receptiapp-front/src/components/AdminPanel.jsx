@@ -4,6 +4,8 @@ import CategoryAdmin from './CategoryAdmin';
 import IngredientAdmin from './IngredientAdmin';
 import CommentAdmin from './CommentAdmin';
 import RecipeAdmin from './RecipeAdmin';
+import MonthlyRecipeStats from './MonthlyRecipeStats'; 
+
 
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('users'); // default: korisnici
@@ -15,6 +17,7 @@ const AdminPanel = () => {
       case 'ingredients': return <IngredientAdmin />;
       case 'comments': return <CommentAdmin />;
       case 'recipes': return <RecipeAdmin />;
+      case 'stats': return <MonthlyRecipeStats />;
       default: return null;
     }
   };
@@ -49,6 +52,9 @@ const AdminPanel = () => {
             <button onClick={() => setActiveTab('recipes')}>
               Recepti
             </button>
+          </li>
+          <li>
+            <button onClick={() => setActiveTab('stats')}>Statistika</button>
           </li>
         </ul>
       </div>

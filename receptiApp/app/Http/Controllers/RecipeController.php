@@ -374,5 +374,17 @@ class RecipeController extends Controller
         return response()->json(['is_favorited' => $isFavorited]);
     }
 
+    // funkcija koja vraca broj recepta kreiranih po mesecu(sluzi kasnije za vizualizaciju podataka)
+    public function recipesPerMonth()
+    {
+        $recipesByMonth = Recipe::select(
+                DB::raw("MONTH(created_at) as mesec"),
+                DB::raw("COUNT(*) as broj"))
+            ->groupBy(DB::raw("MONTH(created_at)"))
+            ->orderBy(DB::raw("MONTH(created_at)"))
+            ->get();
+
+        return response()->json($recipesByMonth);
+    }
     
 }
