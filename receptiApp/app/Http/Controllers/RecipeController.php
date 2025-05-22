@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+//rad sa transakcijama
+use Illuminate\Support\Facades\DB;
+
 //index()	Dohvata sve recepte
 //store()	Kreira novi recept
 //show()	Dohvata pojedinačan recept
@@ -175,16 +178,26 @@ class RecipeController extends Controller
 
     public function destroy($id)
     {
-        $recipe = Recipe::findOrFail($id);
+        try {
+            DB::transaction(function () use ($id) {
+                $recipe = Recipe::findOrFail($id);
 
-        // Brišemo povezane zapise iz pivot tabela pre nego što obrišemo recept
-        $recipe->categories()->detach();
-        $recipe->ingredients()->detach();
+                // Brišemo povezane podatke
+                $recipe->categories()->detach();
+                $recipe->ingredients()->detach();
+                $recipe->favorites()->detach(); // brišemo i favorite 
+                $recipe->ratedByUsers()->detach(); // ocene u pivot tabeli
 
-        $recipe->delete();
+                // Na kraju brišemo recept
+                $recipe->delete();
+            });
 
-        return response()->json(['message' => 'Recept obrisan!']);
+            return response()->json(['message' => 'Recept je uspešno obrisan.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Greška pri brisanju recepta.'], 500);
+        }
     }
+
 
     //Prikazuje najpopularnije recepte, njih 10(sortirane po pregledima)
     public function popular()
