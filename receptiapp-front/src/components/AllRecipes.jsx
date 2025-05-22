@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from "axios";
 import RecipeCard from './RecipeCard';
+import usePagination from '../hooks/usePagination';
 
 const AllRecipes = () => {
   const [recipes, setRecipes] = useState([]);
@@ -9,84 +10,87 @@ const AllRecipes = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
-  //Učitaj sve kategorije i sastojke samo jednom kad se komponenta učita
+  // PAGINACIJA+HOOK
+  const {
+    currentPage, setCurrentPage, lastPage, setLastPage, nextPage, prevPage
+  } = usePagination();
+
   useEffect(() => {
-    // Vracemo sve kategorije iz baze
+    // Učitaj kategorije i sastojke
     axios.get('/categories')
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : res.data.data;
         setAllCategories(data || []);
-      })
-      .catch(() => console.error('Greška pri dohvatanju kategorija'));
+      });
 
-    // Vracamo sve sastojke iz baze
     axios.get('/ingredients')
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : res.data.data;
         setAllIngredients(data || []);
-      })
-      .catch(() => console.error('Greška pri dohvatanju sastojaka'));
+      });
   }, []);
 
-  // Funkcija za učitavanje recepata (po potrebi filtrirano)
+  // Poziv na promenu filtera ili strane
+  useEffect(() => {
+    fetchRecipes();
+  }, [selectedCategory, selectedIngredients, currentPage]);
+
   const fetchRecipes = async () => {
     try {
-      let url = '/recipes';
-  
+      let url = `/recipes?page=${currentPage}`;
+
       const hasIngredients = selectedIngredients.length > 0;
       const hasCategory = selectedCategory !== '';
-  
-      // Kombinovano filtriranje
+
+      // Ako postoji filtriranje, koristi odgovarajući URL
       if (hasIngredients && hasCategory) {
         const ingredientQuery = selectedIngredients.map(i => `ingredients[]=${i}`).join('&');
-        url = `/recipes/filter?category=${selectedCategory}&${ingredientQuery}`;
+        url = `/recipes/filter?category=${selectedCategory}&${ingredientQuery}&page=${currentPage}`;
+      } else if (hasIngredients) {
+        const ingredientQuery = selectedIngredients.map(i => `ingredients[]=${i}`).join('&');
+        url = `/recipes/filter-by-ingredients?${ingredientQuery}&page=${currentPage}`;
+      } else if (hasCategory) {
+        url = `/categories/${selectedCategory}/recipes?page=${currentPage}`;
       }
-  
-      // Samo sastojci
-      else if (hasIngredients) {
-        const query = selectedIngredients.map(i => `ingredients[]=${i}`).join('&');
-        url = `/recipes/filter-by-ingredients?${query}`;
-      }
-  
-      // Samo kategorija
-      else if (hasCategory) {
-        url = `/categories/${selectedCategory}/recipes`;
-      }
-  
+
       const res = await axios.get(url);
-  
-      // Obradi različite formate odgovora
-      let data;
-      if (url.includes('/categories/') && url.includes('/recipes')) {
-        data = res.data.recepti || [];
-      } else {
-        data = Array.isArray(res.data) ? res.data : res.data.data;
+      let data = res.data;
+
+      // Ako API vrati objekat koji ima .data (Laravel paginator)
+      if (data && Array.isArray(data.data)) {
+        setRecipes(data.data);
+        setLastPage(data.meta?.last_page || 1);
       }
-  
-      setRecipes(data || []);
+      // Ako backend vrati npr. { recepti: [...] }
+      else if (data && Array.isArray(data.recepti)) {
+        setRecipes(data.recepti);
+        setLastPage(1);
+      }
+      // Ako backend odmah vrati niz
+      else if (Array.isArray(data)) {
+        setRecipes(data);
+        setLastPage(1);
+      }
+      // Ako ništa od ovoga ne važi
+      else {
+        console.error('Nepoznat format odgovora za recepte:', data);
+        setRecipes([]);
+        setLastPage(1);
+      }
     } catch {
       console.error('Greška pri dohvatanju recepata');
     }
   };
-  
 
-  // Pozovi `fetchRecipes` svaki put kad korisnik izmeni filter
-  useEffect(() => {
-    fetchRecipes();
-  }, [selectedCategory, selectedIngredients]);
-
-  // Dodaj/ukloni sastojak iz liste izabranih
   const handleIngredientToggle = (id) => {
     setSelectedIngredients(prev =>
-      prev.includes(id)
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
+    setCurrentPage(1); // reset na prvu stranicu kad filtriraš
   };
 
   return (
     <div className="all-recipes">
-
       <h2>Svi recepti</h2>
 
       {/* FILTERI */}
@@ -95,7 +99,10 @@ const AllRecipes = () => {
           <label>Kategorija:</label>
           <select
             value={selectedCategory}
-            onChange={e => setSelectedCategory(e.target.value)}
+            onChange={e => {
+              setSelectedCategory(e.target.value);
+              setCurrentPage(1); // reset paginacije
+            }}
           >
             <option value="">Sve</option>
             {allCategories.map(cat => (
@@ -132,9 +139,33 @@ const AllRecipes = () => {
           ))
         )}
       </div>
+
+      {/* PAGINACIJA */}
+      {lastPage > 1 && (
+        <div className="pagination">
+          <button
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+          >
+            Prethodna
+          </button>
+
+          <span style={{ margin: '0 10px' }}>
+            Strana {currentPage} od {lastPage}
+          </span>
+
+          <button
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, lastPage))}
+            disabled={currentPage === lastPage}
+          >
+            Sledeća
+          </button>
+        </div>
+      )}
     </div>
   );
 };
 
 export default AllRecipes;
+
 

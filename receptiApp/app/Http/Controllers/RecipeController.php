@@ -33,8 +33,17 @@ class RecipeController extends Controller
     public function index()
     {
         $recipes = Recipe::with('author')->get();
+        //paginacija
+        return RecipeResource::collection(Recipe::paginate(10));
+    }
+
+    //bez paginacije
+    public function getAllRecipes()
+    {
+        $recipes = Recipe::with('author')->get();
         return RecipeResource::collection($recipes);
     }
+
 
     public function store(Request $request)
     {

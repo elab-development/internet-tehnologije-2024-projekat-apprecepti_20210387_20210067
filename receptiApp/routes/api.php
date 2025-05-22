@@ -31,6 +31,9 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(fun
 
     // CSV eksport podataka za korisnike
     Route::get('/admin/export-users', [UserController::class, 'exportToCsv']);
+
+    //Prikaz svih recepta bez paginacije
+    Route::get('/admin/recipes', [RecipeController::class, 'getAllRecipes']);
 });
 
 // RUTE KOJIMA MOGU PRISTUPITI ULOGOVANI KORISNIK I ADMIN 

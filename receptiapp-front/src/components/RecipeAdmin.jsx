@@ -7,7 +7,7 @@ const RecipeAdmin = () => {
 
   const fetchRecipes = async () => {
     try {
-      const res = await axios.get('/recipes', {
+      const res = await axios.get('/admin/recipes', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRecipes(res.data.data || res.data);
