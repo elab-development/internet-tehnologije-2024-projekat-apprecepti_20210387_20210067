@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -133,6 +134,19 @@ class UserController extends Controller
         $response->headers->set('Content-Disposition', 'attachment; filename="users.csv"');
         return $response;
     }
+
+    //Statistika registrovanih korisnika po mesecu
+    public function usersPerMonth()
+    {
+        $users = DB::table('users')
+            ->selectRaw('MONTH(created_at) as mesec, COUNT(*) as broj')
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->orderBy(DB::raw('MONTH(created_at)'))
+            ->get();
+
+        return response()->json($users);
+    }
+
 
 
 }

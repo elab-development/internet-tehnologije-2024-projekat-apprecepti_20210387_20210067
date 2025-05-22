@@ -5,6 +5,8 @@ import IngredientAdmin from './IngredientAdmin';
 import CommentAdmin from './CommentAdmin';
 import RecipeAdmin from './RecipeAdmin';
 import MonthlyRecipeStats from './MonthlyRecipeStats'; 
+import MonthlyUserStats from './MonthlyUserStats';
+
 
 
 const AdminPanel = () => {
@@ -17,7 +19,8 @@ const AdminPanel = () => {
       case 'ingredients': return <IngredientAdmin />;
       case 'comments': return <CommentAdmin />;
       case 'recipes': return <RecipeAdmin />;
-      case 'stats': return <MonthlyRecipeStats />;
+      case 'stats': return <><MonthlyRecipeStats /><MonthlyUserStats/>
+      </>;
       default: return null;
     }
   };

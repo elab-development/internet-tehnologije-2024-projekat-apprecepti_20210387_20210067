@@ -35,6 +35,10 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':admin'])->group(fun
     // Broj recepta mesecno
     Route::get('/recipes/statistics/monthly', [RecipeController::class, 'recipesPerMonth']);
 
+    // Broj registrovanih korisnika mesecno
+    Route::get('/users/statistics/monthly', [UserController::class, 'usersPerMonth']);
+
+
     //Prikaz svih recepta bez paginacije
     Route::get('/admin/recipes', [RecipeController::class, 'getAllRecipes']);
 });
