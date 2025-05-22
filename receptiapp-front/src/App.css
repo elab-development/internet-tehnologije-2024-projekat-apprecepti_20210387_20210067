@@ -375,4 +375,11 @@
 .comment-form button:hover {
   background-color: #218838;
 }
+.cooking-tip {
+  background-color: #fffbe6;
+  border-left: 4px solid #f7c948;
+  padding: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+}
 

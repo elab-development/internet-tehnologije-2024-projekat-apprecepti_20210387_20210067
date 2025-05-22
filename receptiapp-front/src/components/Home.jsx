@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from "axios";
 import RecipeCard from './RecipeCard';
 import AllRecipes from './AllRecipes';
+import CookingTip from './CookingTip';
 
 const Home = () => {
   const [popularRecipes, setPopularRecipes] = useState([]);
@@ -17,6 +18,7 @@ const Home = () => {
 
   return (
     <div className="home-container">
+        <CookingTip />
       <section>
         <h2>Popularni recepti</h2>
         <div className="recipe-list">
