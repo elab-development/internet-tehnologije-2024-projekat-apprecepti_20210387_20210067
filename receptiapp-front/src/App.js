@@ -10,8 +10,7 @@ import FavoriteRecipes from './components/FavoriteRecipes';
 import RecipeForm from './components/RecipeForm';
 import MyRecipes from './components/MyRecipes';
 import AdminPanel from './components/AdminPanel';
-import CategoryAdmin from './components/CategoryAdmin';
-
+import Breadcrumbs from './components/Breadcrumbs';
 
 function App() {
   //cuvamo korisnika i njegove podatke 
@@ -24,8 +23,8 @@ function App() {
     <Router>
       {/* prosledjujemo kao parametar korisnika kako bismo odredili prikaz */}
       <Navbar user={user} setUser={setUser} />
+      <Breadcrumbs />
       <Routes>
-
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/moji-recepti" element={<MyRecipes />} />
         <Route path="/recipes/create" element={<RecipeForm />} />
