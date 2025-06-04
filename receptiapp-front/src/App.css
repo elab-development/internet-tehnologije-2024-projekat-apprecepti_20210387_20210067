@@ -38,162 +38,384 @@
 }
 
 
-/*Navbar komponenta css */
-.navbar {
-  padding: 10px;
-  border-bottom: 1px solid gray;
-  background-color: #f8f8f8;
+/* Navbar.css */
+
+/* Globalne podešavanja za font */
+body {
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fdfdfd;
+  color: #333;
 }
 
-.nav-link {
-  margin-right: 15px;
+/* Navbar osnovni stil */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Linkovi unutar navbar-a */
+.nav-link,
+.dropdown-button,
+.logout-button {
+  margin: 0 1rem;
   text-decoration: none;
   color: #333;
-  font-weight: bold;
-}
-
-.nav-link:hover {
-  color: #007bff;
-}
-
-.logout-button {
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
   background: none;
   border: none;
-  color: #d9534f;
-  font-weight: bold;
   cursor: pointer;
+}
+
+/* Hover efekti za linkove */
+.nav-link:hover,
+.dropdown-button:hover {
+  color: #ff5722;
+}
+
+/* Logout dugme - malo istaknutije */
+.logout-button {
+  background-color: #ff5722;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 .logout-button:hover {
-  text-decoration: underline;
+  background-color: #e64a19;
 }
 
+/* Dropdown pozicija */
 .dropdown {
-  display: inline-block;
   position: relative;
 }
 
+/* Dropdown dugme (samo stil) */
 .dropdown-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  color: #333;
+  display: flex;
+  align-items: center;
 }
 
+/* Dropdown meni */
 .dropdown-content {
   position: absolute;
-  top: 30px;
+  top: 110%;
   left: 0;
-  background-color: white;
-  border: 1px solid gray;
-  padding: 5px 10px;
-  box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-  z-index: 100;
+  background-color: #fff;
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 0.5rem 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 999;
 }
 
+/* Dropdown hover logika */
+.dropdown:hover .dropdown-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Linkovi unutar dropdown-a */
 .dropdown-content a {
   display: block;
-  margin: 5px 0;
-  color: #333;
+  padding: 0.75rem 1rem;
   text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: background 0.3s ease;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.dropdown-content a:last-child {
+  border-bottom: none;
 }
 
 .dropdown-content a:hover {
-  color: #007bff;
+  background-color: #f9f9f9;
+  color: #ff5722;
 }
+
+/* Responsive podešavanja */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  .nav-link,
+  .dropdown-button,
+  .logout-button {
+    margin: 0.5rem 0;
+  }
+
+  .dropdown-content {
+    top: 100%;
+    left: 0;
+  }
+}
+
 
 /* Login i register forma */
+
+/* Login.css */
+
+/* Pozadina stranice */
+body {
+  background-color: #fdfdfd;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Kontejner za login formu */
 .login-container {
   max-width: 400px;
-  margin: 40px auto;
-  padding: 20px;
+  margin: 5rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  text-align: center;
+}
+
+/* Naslov */
+.login-container h2 {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #222;
+}
+
+/* Forma */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Form grupe */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Labela */
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Input polja */
+.form-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fdfdfd;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.login-form .form-group {
-  margin-bottom: 15px;
+.form-group input:focus {
+  border-color: #ff5722;
+  box-shadow: 0 0 5px rgba(255, 87, 34, 0.3);
+  outline: none;
 }
 
-.login-form label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+/* Poruka za grešku */
+.error-message {
+  color: #e53935;
+  font-weight: 500;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
 }
 
-.login-form input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
+/* Dugme za login */
 .login-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
+  background-color: #ff5722;
+  color: #fff;
+  padding: 0.75rem 1rem;
   border: none;
-  border-radius: 4px;
-  font-weight: bold;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .login-button:hover {
-  background-color: #0056b3;
+  background-color: #e64a19;
+  transform: scale(1.03);
 }
+/* Animacija za error */
 
-.error-message {
-  color: red;
-  margin-top: 10px;
-}
-
-.register-container {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 20px;
-  border: 1px solid #ddd;
+.animated-error {
+  animation: fadeIn 0.5s ease-in-out;
+  color: #e53935;
+  font-weight: 500;
+  margin: -0.5rem 0 1rem 0;
+  padding: 0.5rem;
+  background-color: #fdecea;
+  border: 1px solid #f5c6cb;
   border-radius: 8px;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Register.css */
+
+/* Globalne postavke */
+body {
   background-color: #fdfdfd;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
 }
 
-.register-form .form-group {
-  margin-bottom: 15px;
+/* Kontejner za formu */
+.register-container {
+  max-width: 450px;
+  margin: 5rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  text-align: center;
 }
 
-.register-form label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+/* Naslov */
+.register-container h2 {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #222;
 }
 
-.register-form input,
-.register-form select,
-.register-form textarea {
+/* Forma */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Form grupe */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Labela */
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Input polja i textarea */
+.form-group input,
+.form-group textarea {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  resize: none;
+  box-sizing: border-box;
 }
 
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #ff5722;
+  box-shadow: 0 0 5px rgba(255, 87, 34, 0.3);
+  outline: none;
+}
+
+/* Error poruka */
+.error-message {
+  color: #e53935;
+  font-weight: 500;
+  background-color: #fdecea;
+  border: 1px solid #f5c6cb;
+  padding: 0.5rem;
+  border-radius: 8px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-in-out;
+  margin: -0.5rem 0 1rem 0;
+}
+
+/* Dugme za registraciju */
 .register-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #28a745;
-  color: white;
+  background-color: #4caf50;
+  color: #fff;
+  padding: 0.75rem 1rem;
   border: none;
-  border-radius: 4px;
-  font-weight: bold;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .register-button:hover {
-  background-color: #218838;
+  background-color: #388e3c;
+  transform: scale(1.03);
 }
+
+/* Animacija za error fade in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Individualna polja za error poruke */
+.field-error {
+  color: #e53935;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
 
 /* recipeCard css */
 .recipe-list {
