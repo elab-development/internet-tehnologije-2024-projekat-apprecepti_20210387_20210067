@@ -6,22 +6,20 @@ import CookingTip from './CookingTip';
 
 const Home = () => {
   const [popularRecipes, setPopularRecipes] = useState([]);
-  //useEffect se poziva kada se komponenta renderuje
+
   useEffect(() => {
-    // Poziv za popularne recepte
     axios.get('/recipes/popular')
       .then(res => setPopularRecipes(res.data.data || []))
       .catch(() => console.error('Greška pri dohvatanju popularnih recepata'));
-
-
   }, []);
 
   return (
     <div className="home-container">
-        <CookingTip />
-      <section>
+      <CookingTip />
+      
+      <section className="popular-recipes-section">
         <h2>Popularni recepti</h2>
-        <div className="recipe-list">
+        <div className="popular-recipe-list">
           {popularRecipes.length === 0
             ? <p>Nema popularnih recepata.</p>
             : popularRecipes.map(recipe => (
@@ -33,7 +31,7 @@ const Home = () => {
       <hr />
 
       <section>
-      <AllRecipes />
+        <AllRecipes />
       </section>
     </div>
   );

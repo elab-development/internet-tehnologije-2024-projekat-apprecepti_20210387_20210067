@@ -441,29 +441,75 @@ body {
   font-size: 1rem;
 }
 
-/* recipeCard css */
-.recipe-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
+/* Global container */
+.home-container {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
 }
 
+/* Popular recipes section */
+.popular-recipes-section {
+  margin: 40px 0;
+}
+
+.popular-recipes-section h2 {
+  font-size: 32px;
+  margin-bottom: 30px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Grid za popularne recepte */
+.popular-recipe-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+/* Recipe Card osnovni stil */
 .recipe-card {
-  flex: 1 1 250px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
   text-decoration: none;
   color: inherit;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #fff;
+  position: relative;
 }
 
-.recipe-card-inner {
-  border: 1px solid #ccc;
-  padding: 15px;
-  border-radius: 8px;
-  background-color: #fdfdfd;
-  transition: box-shadow 0.2s ease;
+.recipe-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
 }
 
-.recipe-card-inner:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+/* Slika unutar kartice */
+.recipe-image img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.recipe-card:hover .recipe-image img {
+  transform: scale(1.1);
+}
+
+/* Tekst ispod slike */
+.recipe-info {
+  padding: 20px;
+  text-align: center;
+}
+
+.recipe-info h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
 }
 
 /* AllRecipe css */

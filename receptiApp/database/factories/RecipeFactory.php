@@ -22,6 +22,7 @@ class RecipeFactory extends Factory
             'vreme_pripreme' => $this->faker->numberBetween(10, 120),
             'tezina' => $this->faker->randomElement(['Lako', 'Srednje', 'Teško']),
             'autor_id' => \App\Models\User::factory(),
+            'image' => 'recipes/default-recipe.jpg',
         ];
     }
 }

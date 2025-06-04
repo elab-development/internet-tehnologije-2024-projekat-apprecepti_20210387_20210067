@@ -15,18 +15,19 @@ class RecipeSeeder extends Seeder
      */
     public function run(): void
     {
-        Recipe::factory(20)->create()->each(function ($recipe) {
-            // Svaki recept pripada 1-3 kategorije
+        // Prvo napravi sve recepte
+        $recipes = Recipe::factory(20)->create();
+        //Povezivanje sa kategorijama i sastojcima
+        foreach ($recipes as $recipe) {
             $recipe->categories()->attach(
                 Category::inRandomOrder()->limit(rand(1, 3))->pluck('id')->toArray()
             );
-    
-            // Svaki recept dobija 3-6 sastojaka sa količinama
+
             $recipe->ingredients()->attach(
                 Ingredient::inRandomOrder()->limit(rand(3, 6))->get()->mapWithKeys(function ($ingredient) {
                     return [$ingredient->id => ['kolicina' => rand(50, 500), 'mera' => 'g']];
                 })->toArray()
             );
-        });
+        }
     }
 }
