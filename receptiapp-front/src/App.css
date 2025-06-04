@@ -172,9 +172,6 @@ body {
   }
 }
 
-
-/* Login i register forma */
-
 /* Login.css */
 
 /* Pozadina stranice */
@@ -415,7 +412,34 @@ body {
   font-size: 0.9rem;
   animation: fadeIn 0.5s ease-in-out;
 }
+/* Stilizacija breadcrumbs-a */
+.breadcrumbs {
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  font-size: 1rem;
+  color: #555;
+  margin: 1.5rem 2rem 2rem 2rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
+.breadcrumbs a {
+  text-decoration: none;
+  color: #ff5722;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.breadcrumbs a:hover {
+  color: #e64a19;
+}
+
+.breadcrumbs span {
+  color: #999;
+  margin: 0 0.4rem;
+  font-weight: 400;
+  font-size: 1rem;
+}
 
 /* recipeCard css */
 .recipe-list {
@@ -597,11 +621,42 @@ body {
 .comment-form button:hover {
   background-color: #218838;
 }
-.cooking-tip {
-  background-color: #fffbe6;
-  border-left: 4px solid #f7c948;
-  padding: 1rem;
-  margin: 1rem 0;
-  font-style: italic;
+.cooking-tip-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background-image: url('/public/images/cooking.jpg'); /* ovde stavi svoju sliku u public/images/ folder */
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 2rem auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5); /* tamni overlay preko slike */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  text-align: center;
+}
+
+.overlay h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.overlay p {
+  font-size: 1.1rem;
+  max-width: 80%;
+  line-height: 1.5;
+}

@@ -9,12 +9,15 @@ const Breadcrumbs = () => {
   let path = '';
 
   return (
-    <nav style={{ marginBottom: '10px' }}>
+    <nav className="breadcrumbs">
       <Link to="/">Početna</Link>
       {parts.map((part, index) => {
         path += `/${part}`;
         return (
-          <span key={index}> / <Link to={path}>{decodeURIComponent(part)}</Link></span>
+          <span key={index} className="breadcrumb-item">
+            <span className="separator">/</span>
+            <Link to={path}>{decodeURIComponent(part)}</Link>
+          </span>
         );
       })}
     </nav>
@@ -22,3 +25,4 @@ const Breadcrumbs = () => {
 };
 
 export default Breadcrumbs;
+

@@ -44,15 +44,11 @@ const translateText = async (text, from = 'en', to = 'sr') => {
   }, []);
 
   return (
-    <div className="cooking-tip" style={{
-      background: '#fffbe6',
-      borderLeft: '4px solid #f7c948',
-      padding: '1rem',
-      marginBottom: '1rem',
-      fontStyle: 'italic'
-    }}>
-      <h3 style={{ marginTop: 0 }}>Da li ste znali...</h3>
-      {loading ? <p>Učitavanje...</p> : <p>{tip}</p>}
+    <div className="cooking-tip-container">
+      <div className="overlay">
+        <h2>Da li ste znali</h2>
+        {loading ? <p>Učitavanje...</p> : <p>{tip}</p>}
+      </div>
     </div>
   );
 };
