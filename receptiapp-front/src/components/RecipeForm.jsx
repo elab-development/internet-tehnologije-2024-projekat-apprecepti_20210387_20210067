@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const RecipeForm = () => {
-  const { id } = useParams(); // ako postoji, koristi se za izmenu
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const token = sessionStorage.getItem('token');
 
@@ -14,10 +14,10 @@ const RecipeForm = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [image, setImage] = useState(null); // dodajemo sliku
 
   const isEditMode = Boolean(id);
 
-  //Dohvati sve kategorije kada se komponenta učita
   useEffect(() => {
     axios.get('/categories')
       .then(res => {
@@ -26,18 +26,15 @@ const RecipeForm = () => {
       });
   }, []);
 
-  // Ako je u pitanju izmena, popuni polja sa podacima o receptu
   useEffect(() => {
     if (isEditMode) {
       axios.get(`/recipes/${id}`).then(res => {
         const r = res.data.recipes;
-  
         setNaziv(r.naziv);
         setOpis(r.opis);
         setVremePripreme(parseInt(r.vreme_pripreme));
         setTezina(r.tezina);
         setSelectedCategories(r.kategorije?.map(k => k.id) || []);
-  
         setIngredients(
           r.sastojci?.map(i => ({
             naziv: i.naziv,
@@ -48,33 +45,38 @@ const RecipeForm = () => {
       });
     }
   }, [id]);
-  
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      naziv,
-      opis,
-      vreme_pripreme: parseInt(vremePripreme),
-      tezina,
-      autor_id: JSON.parse(sessionStorage.getItem('user'))?.id,
-      categories: selectedCategories,
-      ingredients,
-    };
+    const formData = new FormData();
+    formData.append('naziv', naziv);
+    formData.append('opis', opis);
+    formData.append('vreme_pripreme', parseInt(vremePripreme));
+    formData.append('tezina', tezina);
+    formData.append('autor_id', JSON.parse(sessionStorage.getItem('user'))?.id);
+    formData.append('categories', JSON.stringify(selectedCategories));
+    formData.append('ingredients', JSON.stringify(ingredients));
+    
+    if (image) {
+      formData.append('image', image);
+    }
 
     try {
       if (isEditMode) {
-        //izmena recepta
-        await axios.put(`/recipes/${id}`, payload, {
-          headers: { Authorization: `Bearer ${token}` }
+        await axios.post(`/recipes/${id}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
         });
         alert('Recept uspešno izmenjen.');
       } else {
-        //kreiranje novog recepta
-        await axios.post('/recipes', payload, {
-          headers: { Authorization: `Bearer ${token}` }
+        await axios.post('/recipes', formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
         });
         alert('Recept dodat.');
       }
@@ -108,11 +110,9 @@ const RecipeForm = () => {
                 value={cat.id}
                 checked={selectedCategories.includes(cat.id)}
                 onChange={(e) => {
-                  //proverava da li je checkbox trenutno čekiran
                   if (e.target.checked) {
                     setSelectedCategories([...selectedCategories, cat.id]);
                   } else {
-                    //ukoliko odčekiramo neku kategoriju
                     setSelectedCategories(selectedCategories.filter(id => id !== cat.id));
                   }
                 }}
@@ -162,6 +162,11 @@ const RecipeForm = () => {
           <button type="button" onClick={() => setIngredients([...ingredients, { naziv: '', kolicina: '', mera: '' }])}>
             Unesi još jedan sastojak
           </button>
+        </div>
+
+        <div>
+          <p>Slika recepta:</p>
+          <input type="file" onChange={(e) => setImage(e.target.files[0])} />
         </div>
 
         <button type="submit">{isEditMode ? 'Sačuvaj izmene' : 'Dodaj recept'}</button>

@@ -24,7 +24,7 @@ class RecipeResource extends JsonResource
             'vreme_pripreme' => $this->vreme_pripreme . ' min',
             'tezina' => $this->tezina,
             'pregledi' => $this->pregledi,
-
+            'image' => $this->image ? asset('storage/'.$this->image) : null,
             // Autor recepta
             'autor' => new UserResource($this->whenLoaded('author')),
 

@@ -10,7 +10,7 @@ class Recipe extends Model
     /** @use HasFactory<\Database\Factories\RecipeFactory> */
     use HasFactory;
 
-    protected $fillable = ['naziv', 'opis', 'vreme_pripreme', 'tezina', 'autor_id'];
+    protected $fillable = ['naziv', 'opis', 'vreme_pripreme', 'tezina', 'autor_id','image'];
     //recept ima jednog autora
     public function author()
     {

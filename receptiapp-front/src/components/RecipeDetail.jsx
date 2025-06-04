@@ -13,7 +13,6 @@ const RecipeDetail = ({ user }) => {
   const [error, setError] = useState('');
   const token = sessionStorage.getItem('token');
 
-  //Ucitavanje odredjenog recepta iz baze
   const fetchRecipe = () => {
     axios.get(`/recipes/${id}`)
       .then(res => {
@@ -23,19 +22,14 @@ const RecipeDetail = ({ user }) => {
       .catch(() => setError('Greška pri učitavanju recepta.'));
   };
 
-  //Provera da li je recept u omiljenim
   const checkIfFavorited = () => {
-    //Korisnik nije prijavljen
     if (!token) {
       setIsFavorited(false);
       return;
     }
 
-    //Vraca da li je korisnik vec smestio recept u omiljene
     axios.get(`/recipes/${id}/is-favorited`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     })
     .then(res => {
       setIsFavorited(res.data.is_favorited);
@@ -49,37 +43,34 @@ const RecipeDetail = ({ user }) => {
     fetchRecipe();
 
     if (location.state?.isFavorited) {
-      setIsFavorited(true); // došao iz FavoriteRecipes
+      setIsFavorited(true);
     } else {
-      checkIfFavorited(); // standardna provera
+      checkIfFavorited();
     }
   }, [id]);
 
-  //Dodavanje recepta u omiljene
   const handleFavorite = async () => {
     try {
       await axios.post(`/recipes/${id}/favorite`, {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsFavorited(true); // odmah ažuriraj lokalno stanje
+      setIsFavorited(true);
     } catch {
       alert('Greška pri dodavanju u omiljene');
     }
   };
 
-  //Uklanjanje recepta iz omiljenih
   const handleUnfavorite = async () => {
     try {
       await axios.delete(`/recipes/${id}/favorite`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setIsFavorited(false); // odmah ažuriraj lokalno stanje
+      setIsFavorited(false);
     } catch {
       alert('Greška pri uklanjanju iz omiljenih');
     }
   };
 
-  //Funkcija za ocenjivanje recepta
   const handleRating = async () => {
     try {
       await axios.post(`/recipes/${id}/rate`, { ocena: rating }, {
@@ -95,19 +86,26 @@ const RecipeDetail = ({ user }) => {
   if (error) return <p>{error}</p>;
   if (!recipe) return <p>Učitavanje...</p>;
 
+
   return (
     <div className="recipe-detail">
       <h2>{recipe.naziv}</h2>
+
+      {recipe.image && (
+  <div className="recipe-image">
+    <img src={recipe.image} alt={recipe.naziv} style={{ maxWidth: '400px', borderRadius: '8px' }} />
+  </div>
+)}
+
+
       <p>{recipe.opis}</p>
       <p><strong>Težina:</strong> {recipe.tezina}</p>
-      <p><strong>Vreme pripreme:</strong> {recipe.vreme_pripreme}</p>
+      <p><strong>Vreme pripreme:</strong> {recipe.vreme_pripreme} min</p>
 
       <h4>Sastojci</h4>
       <ul>
         {recipe.sastojci?.map((ing, i) => (
-          <li key={i}>
-            {ing.naziv} – {ing.kolicina} {ing.mera}
-          </li>
+          <li key={i}>{ing.naziv} – {ing.kolicina} {ing.mera}</li>
         ))}
       </ul>
 
@@ -144,26 +142,18 @@ const RecipeDetail = ({ user }) => {
             <button onClick={handleRating}>Pošalji ocenu</button>
           </div>
 
-          <CommentForm
-            recipeId={recipe.id}
-            token={token}
-            onCommentAdded={fetchRecipe}
-          />
+          <CommentForm recipeId={recipe.id} token={token} onCommentAdded={fetchRecipe} />
         </>
       )}
 
       <hr />
-      <CommentList
-        comments={recipe.komentari}
-        user={user}
-        onRefresh={fetchRecipe}
-        recipeId={recipe.id}
-      />
+      <CommentList comments={recipe.komentari} user={user} onRefresh={fetchRecipe} recipeId={recipe.id} />
     </div>
   );
 };
 
 export default RecipeDetail;
+
 
 
 
