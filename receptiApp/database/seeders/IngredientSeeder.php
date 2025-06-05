@@ -13,7 +13,7 @@ class IngredientSeeder extends Seeder
      */
     public function run(): void
     {
-        $ingredients = ['Brašno', 'Jaja', 'Mleko', 'Šećer', 'So', 'Piletina', 'Biber'];
+        $ingredients = ['Brašno', 'Jaja', 'Mleko', 'Krompir', 'Luk', 'Piletina', 'Sir'];
 
         foreach ($ingredients as $ingredient) {
             Ingredient::create(['naziv' => $ingredient]);

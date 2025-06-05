@@ -62,5 +62,13 @@ class IngredientController extends Controller
 
         return response()->json($ingredients);
     }
+    // Vraća osnovnih 10 sastojaka za korisnički filter
+    public function featured()
+    {
+        $ingredients = Ingredient::whereIn('id', [1, 2, 3, 4, 5, 6])->get();
+
+        return response()->json($ingredients);
+    }
+
 
 }

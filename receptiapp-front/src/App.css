@@ -512,26 +512,139 @@ body {
   color: #333;
 }
 
-/* AllRecipe css */
-.filters {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin: 20px 0;
+/* ALL RECIPES CONTAINER */
+.all-recipes {
+  margin-top: 60px;
+  padding: 0 20px;
 }
 
+.all-recipes h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* FILTERI */
+.filters-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 40px;
+  align-items: flex-start;
+}
+
+.filter-block {
+  flex: 1;
+  min-width: 300px;
+}
+
+.category-select {
+  padding: 12px 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  font-size: 16px;
+  width: 100%;
+  margin-top: 10px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: 0.3s ease;
+}
+
+.category-select:focus {
+  border-color: #ff6b6b;
+  outline: none;
+}
+
+/* SEARCH INPUT ZA SASTOJKE */
+.ingredient-search-input {
+  padding: 12px 18px;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin: 10px 0 15px 0;
+  font-size: 14px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: 0.3s ease;
+}
+
+.ingredient-search-input:focus {
+  border-color: #ff6b6b;
+  outline: none;
+}
+
+/* Ingredient chips */
 .ingredients-list {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
-.ingredients-list label {
-  border: 1px solid #ccc;
-  padding: 5px 10px;
-  border-radius: 4px;
+.ingredient-chip {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  border-radius: 30px;
+  font-size: 14px;
+  background-color: #f9f9f9;
   cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
 }
+
+.ingredient-chip:hover {
+  background-color: #eee;
+}
+
+.ingredient-chip.selected {
+  background-color: #ff6b6b;
+  color: #fff;
+  border-color: #ff6b6b;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* RECEPT GRID - koristimo isti kao za popularne recepte */
+.popular-recipe-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+/* PAGINACIJA */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+  gap: 20px;
+}
+
+.pagination button {
+  background-color: #ff6b6b;
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #e75858;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: default;
+}
+
+.pagination span {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
 
 /* recipeDetail css */
 .recipe-detail {

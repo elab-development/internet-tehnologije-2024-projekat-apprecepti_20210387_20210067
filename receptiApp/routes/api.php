@@ -88,5 +88,7 @@ Route::get('/recipes/popular', [RecipeController::class, 'popular']);//Prikaz re
 Route::get('/recipes/category/{id}', [RecipeController::class, 'filterByCategory']);
 Route::get('/recipes/filter-by-ingredients', [RecipeController::class, 'filterByIngredients']);//Parametre saljemo putem query-ja u body delu kako bi omogucili real-time i pretragu po VISE sastojka
 Route::resource('/recipes', RecipeController::class)->only(['index', 'show']);
+Route::get('/ingredients/featured', [IngredientController::class, 'featured']);
+
 
 

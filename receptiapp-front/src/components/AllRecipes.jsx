@@ -10,25 +10,53 @@ const AllRecipes = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
+  // Dodato za pretragu sastojaka
+  const [ingredientSearch, setIngredientSearch] = useState('');
+
   // PAGINACIJA+HOOK
   const {
     currentPage, setCurrentPage, lastPage, setLastPage, nextPage, prevPage
   } = usePagination();
 
   useEffect(() => {
-    // Učitaj kategorije i sastojke
+    // Učitaj kategorije
     axios.get('/categories')
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : res.data.data;
         setAllCategories(data || []);
       });
 
-    axios.get('/ingredients')
+    // Učitaj osnovnih 10 sastojaka (featured)
+    axios.get('/ingredients/featured')
       .then(res => {
         const data = Array.isArray(res.data) ? res.data : res.data.data;
         setAllIngredients(data || []);
       });
   }, []);
+
+  // Debounced search za sastojke
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (ingredientSearch.trim() === '') {
+        // Ako nema pretrage, vraćamo featured sastojke
+        axios.get('/ingredients/featured')
+          .then(res => {
+            const data = Array.isArray(res.data) ? res.data : res.data.data;
+            setAllIngredients(data || []);
+          });
+      } else {
+        // Ako korisnik kuca, pozivamo search backend
+        axios.get(`/ingredients/search?query=${ingredientSearch}`)
+          .then(res => {
+            const data = Array.isArray(res.data) ? res.data : res.data.data;
+            setAllIngredients(data || []);
+          });
+      }
+    }, 500); // debounce 500ms
+  
+    return () => clearTimeout(delayDebounceFn);
+  }, [ingredientSearch]);
+  
 
   // Poziv na promenu filtera ili strane
   useEffect(() => {
@@ -50,7 +78,7 @@ const AllRecipes = () => {
         const ingredientQuery = selectedIngredients.map(i => `ingredients[]=${i}`).join('&');
         url = `/recipes/filter-by-ingredients?${ingredientQuery}&page=${currentPage}`;
       } else if (hasCategory) {
-        url = `/categories/${selectedCategory}/recipes?page=${currentPage}`;
+        url = `/recipes/category/${selectedCategory}&page=${currentPage}`;
       }
 
       const res = await axios.get(url);
@@ -86,6 +114,7 @@ const AllRecipes = () => {
     setSelectedIngredients(prev =>
       prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
+    setIngredientSearch('');
     setCurrentPage(1); // reset na prvu stranicu kad filtriraš
   };
 
@@ -94,10 +123,11 @@ const AllRecipes = () => {
       <h2>Svi recepti</h2>
 
       {/* FILTERI */}
-      <div className="filters">
-        <div>
+      <div className="filters-container">
+        <div className="filter-block">
           <label>Kategorija:</label>
           <select
+            className="category-select"
             value={selectedCategory}
             onChange={e => {
               setSelectedCategory(e.target.value);
@@ -111,17 +141,24 @@ const AllRecipes = () => {
           </select>
         </div>
 
-        <div>
+        <div className="filter-block">
           <label>Sastojci:</label>
+
+          <input 
+            type="text" 
+            placeholder="Pretraži sastojke..." 
+            value={ingredientSearch} 
+            onChange={e => setIngredientSearch(e.target.value)} 
+            className="ingredient-search-input"
+          />
+
           <div className="ingredients-list">
             {allIngredients.map(ing => (
-              <label key={ing.id}>
-                <input
-                  type="checkbox"
-                  value={ing.id}
-                  checked={selectedIngredients.includes(ing.id)}
-                  onChange={() => handleIngredientToggle(ing.id)}
-                />
+              <label 
+                key={ing.id}
+                className={`ingredient-chip ${selectedIngredients.includes(ing.id) ? 'selected' : ''}`}
+                onClick={() => handleIngredientToggle(ing.id)}
+              >
                 {ing.naziv}
               </label>
             ))}
@@ -130,7 +167,7 @@ const AllRecipes = () => {
       </div>
 
       {/* PRIKAZ RECEPATA */}
-      <div className="recipe-list">
+      <div className="popular-recipe-list">
         {recipes.length === 0 ? (
           <p>Nema recepata za prikaz.</p>
         ) : (
@@ -150,9 +187,7 @@ const AllRecipes = () => {
             Prethodna
           </button>
 
-          <span style={{ margin: '0 10px' }}>
-            Strana {currentPage} od {lastPage}
-          </span>
+          <span>Strana {currentPage} od {lastPage}</span>
 
           <button
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, lastPage))}
@@ -167,5 +202,6 @@ const AllRecipes = () => {
 };
 
 export default AllRecipes;
+
 
 

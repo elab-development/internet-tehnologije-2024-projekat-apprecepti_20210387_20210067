@@ -371,7 +371,6 @@ class RecipeController extends Controller
             $recipes = Recipe::whereHas('categories', function ($q) use ($categoryId) {
                     $q->where('categories.id', $categoryId);
                 })
-                // ovo sada filtrira po SVIM sastojcima
                 ->where(function ($query) use ($ingredientIds) {
                     foreach ($ingredientIds as $ingredientId) {
                         $query->whereHas('ingredients', function ($q) use ($ingredientId) {
@@ -382,13 +381,14 @@ class RecipeController extends Controller
                 ->with(['categories', 'ingredients'])
                 ->get();
     
-            return response()->json(['data' => $recipes]);
+            return RecipeResource::collection($recipes);
     
         } catch (\Throwable $e) {
             logger()->error('Greška u filtriranju: ' . $e->getMessage());
             return response()->json(['error' => 'Greška na serveru.'], 500);
         }
     }
+    
     //proverava da li je korisnik vec smestio recept u omiljene
     public function isFavorited($id)
     {
