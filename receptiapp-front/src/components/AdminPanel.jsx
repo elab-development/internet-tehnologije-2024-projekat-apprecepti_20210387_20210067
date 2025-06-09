@@ -8,9 +8,8 @@ import MonthlyRecipeStats from './MonthlyRecipeStats';
 import MonthlyUserStats from './MonthlyUserStats';
 
 
-
 const AdminPanel = () => {
-  const [activeTab, setActiveTab] = useState('users'); // default: korisnici
+  const [activeTab, setActiveTab] = useState('users');
 
   const renderActiveComponent = () => {
     switch (activeTab) {
@@ -19,51 +18,26 @@ const AdminPanel = () => {
       case 'ingredients': return <IngredientAdmin />;
       case 'comments': return <CommentAdmin />;
       case 'recipes': return <RecipeAdmin />;
-      case 'stats': return <><MonthlyRecipeStats /><MonthlyUserStats/>
-      </>;
+      case 'stats': return <><MonthlyRecipeStats /><MonthlyUserStats/></>;
       default: return null;
     }
   };
 
   return (
-    <div style={{ display: 'flex' }}>
-      {/* Sidebar meni */}
-      <div style={{ width: '200px', borderRight: '1px solid #ccc', padding: '1rem' }}>
-        <h3>Admin meni</h3>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          <li>
-            <button onClick={() => setActiveTab('users')}>
-              Korisnici
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setActiveTab('categories')}>
-              Kategorije
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setActiveTab('ingredients')}>
-              Sastojci
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setActiveTab('comments')}>
-              Komentari
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setActiveTab('recipes')}>
-              Recepti
-            </button>
-          </li>
-          <li>
-            <button onClick={() => setActiveTab('stats')}>Statistika</button>
-          </li>
+    <div className="admin-container">
+      <div className="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+          <li><button onClick={() => setActiveTab('users')}>Korisnici</button></li>
+          <li><button onClick={() => setActiveTab('categories')}>Kategorije</button></li>
+          <li><button onClick={() => setActiveTab('ingredients')}>Sastojci</button></li>
+          <li><button onClick={() => setActiveTab('comments')}>Komentari</button></li>
+          <li><button onClick={() => setActiveTab('recipes')}>Recepti</button></li>
+          <li><button onClick={() => setActiveTab('stats')}>Statistika</button></li>
         </ul>
       </div>
 
-      {/* Glavni sadržaj */}
-      <div style={{ flex: 1, padding: '1rem' }}>
+      <div className="admin-content">
         {renderActiveComponent()}
       </div>
     </div>
@@ -71,3 +45,4 @@ const AdminPanel = () => {
 };
 
 export default AdminPanel;
+
