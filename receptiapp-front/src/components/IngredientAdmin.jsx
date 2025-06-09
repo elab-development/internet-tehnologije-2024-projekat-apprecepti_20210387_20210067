@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import ConfirmDialog from './ConfirmDialog';
+
 
 const IngredientAdmin = () => {
   const [ingredients, setIngredients] = useState([]);
   const [newName, setNewName] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedIngredientId, setSelectedIngredientId] = useState(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [editName, setEditName] = useState('');
   const token = sessionStorage.getItem('token');
 
   const fetchIngredients = async () => {
@@ -30,25 +36,39 @@ const IngredientAdmin = () => {
     }
   };
 
-  const updateIngredient = async (id, naziv) => {
-    const newNaziv = prompt('Novi naziv sastojka:', naziv);
-    if (!newNaziv || newNaziv === naziv) return;
+  const openEditDialog = (id, naziv) => {
+    setSelectedIngredientId(id);
+    setEditName(naziv);
+    setShowEditDialog(true);
+  };
+
+  const updateIngredient = async () => {
+    if (!editName.trim()) return;
     try {
-      await axios.put(`/ingredients/${id}`, { naziv: newNaziv }, {
+      await axios.put(`/ingredients/${selectedIngredientId}`, { naziv: editName }, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      setShowEditDialog(false);
+      setEditName('');
+      setSelectedIngredientId(null);
       fetchIngredients();
     } catch {
       alert('Greška pri izmeni sastojka.');
     }
   };
 
-  const deleteIngredient = async (id) => {
-    if (!window.confirm('Da li želiš da obrišeš ovaj sastojak?')) return;
+  const confirmDelete = (id) => {
+    setSelectedIngredientId(id);
+    setShowConfirm(true);
+  };
+
+  const deleteIngredient = async () => {
     try {
-      await axios.delete(`/ingredients/${id}`, {
+      await axios.delete(`/ingredients/${selectedIngredientId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      setShowConfirm(false);
+      setSelectedIngredientId(null);
       fetchIngredients();
     } catch {
       alert('Greška pri brisanju sastojka.');
@@ -60,25 +80,58 @@ const IngredientAdmin = () => {
   }, []);
 
   return (
-    <div>
-      <h3>Sastojci</h3>
-      <ul>
+    <div className="ingredient-admin-container">
+      <div className="ingredient-admin-header">
+        <h3>Sastojci</h3>
+      </div>
+
+      <ul className="ingredient-list">
         {ingredients.map(ing => (
-          <li key={ing.id}>
-            {ing.naziv}
-            <button onClick={() => updateIngredient(ing.id, ing.naziv)}>Izmeni</button>
-            <button onClick={() => deleteIngredient(ing.id)}>Obriši</button>
+          <li key={ing.id} className="ingredient-item">
+            <span>{ing.naziv}</span>
+            <div className="button-group">
+              <button className="edit" onClick={() => openEditDialog(ing.id, ing.naziv)}>Izmeni</button>
+              <button className="delete" onClick={() => confirmDelete(ing.id)}>Obriši</button>
+            </div>
           </li>
         ))}
       </ul>
-      <input
-        value={newName}
-        onChange={(e) => setNewName(e.target.value)}
-        placeholder="Novi sastojak"
+
+      <div className="add-ingredient">
+        <input
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
+          placeholder="Novi sastojak"
+        />
+        <button className="add" onClick={addIngredient}>Dodaj</button>
+      </div>
+
+      <ConfirmDialog
+        show={showConfirm}
+        onClose={() => setShowConfirm(false)}
+        onConfirm={deleteIngredient}
+        message="Da li ste sigurni da želite da obrišete sastojak?"
       />
-      <button onClick={addIngredient}>Dodaj</button>
+
+      {showEditDialog && (
+        <div className="edit-overlay">
+          <div className="edit-box">
+            <h4>Izmeni sastojak</h4>
+            <input
+              value={editName}
+              onChange={e => setEditName(e.target.value)}
+              placeholder="Novi naziv"
+            />
+            <div className="edit-actions">
+              <button className="save" onClick={updateIngredient}>Sačuvaj</button>
+              <button className="cancel" onClick={() => setShowEditDialog(false)}>Otkaži</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default IngredientAdmin;
+

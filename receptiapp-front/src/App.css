@@ -1099,3 +1099,329 @@ body {
 .confirm-btn.cancel:hover {
   background-color: #ddd;
 }
+
+/* CSS za CategoryAdmin komponentu */
+.category-admin-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.category-admin-header h3 {
+  font-size: 24px;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.category-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.button-group button {
+  margin-left: 10px;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button.edit {
+  background-color: #a1b8c4; 
+  color: white;
+}
+
+button.edit:hover {
+  background-color: #455a64;
+}
+
+button.delete {
+  background-color: #e53935;
+  color: white;
+}
+
+button.delete:hover {
+  background-color: #c62828;
+}
+
+.add-category {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-category input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 250px;
+}
+
+.add-category button.add {
+  background-color: #ff5722;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-category button.add:hover {
+  background-color: #e64a19;
+}
+
+/* Edit modal */
+.edit-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.edit-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  width: 300px;
+  text-align: center;
+}
+
+.edit-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.edit-actions button {
+  margin: 0 10px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.edit-actions .save {
+  background-color: #4caf50;
+  color: white;
+}
+
+.edit-actions .save:hover {
+  background-color: #388e3c;
+}
+
+.edit-actions .cancel {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.edit-actions .cancel:hover {
+  background-color: #ddd;
+}
+
+/* CSS za IngradientAdmin komponentu */
+.ingredient-admin-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.ingredient-admin-header h3 {
+  font-size: 24px;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.ingredient-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 2rem;
+}
+
+.ingredient-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.button-group button {
+  margin-left: 10px;
+  padding: 5px 15px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button.edit {
+  background-color: #607d8b;
+  color: white;
+}
+
+button.edit:hover {
+  background-color: #455a64;
+}
+
+button.delete {
+  background-color: #e53935;
+  color: white;
+}
+
+button.delete:hover {
+  background-color: #c62828;
+}
+
+.add-ingredient {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-ingredient input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 250px;
+}
+
+.add-ingredient button.add {
+  background-color: #ff5722;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-ingredient button.add:hover {
+  background-color: #e64a19;
+}
+
+/* Edit modal */
+.edit-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.edit-box {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  width: 300px;
+  text-align: center;
+}
+
+.edit-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.edit-actions button {
+  margin: 0 10px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.edit-actions .save {
+  background-color: #4caf50;
+  color: white;
+}
+
+.edit-actions .save:hover {
+  background-color: #388e3c;
+}
+
+.edit-actions .cancel {
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.edit-actions .cancel:hover {
+  background-color: #ddd;
+}
+
+/* CSS za CommentAdmin komponentu */
+.comment-admin-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.comment-admin-container h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.comment-list {
+  list-style: none;
+  padding: 10;
+}
+
+.comment-item {
+  background: white;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.comment-item p {
+  margin: 0 15px 10px;
+}
+
+.delete-btn {
+  background-color: #e53935 !important;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 0 15px 10px;
+}
+
+.delete-btn:hover {
+  background-color: #c62828 !important;
+}
