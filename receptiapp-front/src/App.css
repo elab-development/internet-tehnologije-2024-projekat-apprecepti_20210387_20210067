@@ -36,11 +36,6 @@
     transform: rotate(360deg);
   }
 }
-
-
-/* Navbar.css */
-
-/* Globalne podešavanja za font */
 body {
   font-family: 'Segoe UI', 'Roboto', sans-serif;
   margin: 0;
@@ -49,66 +44,82 @@ body {
   color: #333;
 }
 
-/* Navbar osnovni stil */
 .navbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 1rem 2rem;
-  background-color: #ffffff;
+  background-color: #ff5722;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  color: white;
 }
 
-/* Linkovi unutar navbar-a */
+/* Leva strana */
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+/* Logo veći */
+.logo-link img.navbar-logo {
+  height: 70px; 
+  width: auto;
+  margin-right: 2rem;
+}
+
+/* Linkovi odmah desno */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  padding-top: 10px; 
+}
+
+/* Linkovi i dugmad */
 .nav-link,
 .dropdown-button,
 .logout-button {
-  margin: 0 1rem;
+  margin: 0 0.8rem;
   text-decoration: none;
-  color: #333;
-  font-weight: 500;
-  font-size: 1rem;
-  transition: all 0.3s ease;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1.2rem;
   background: none;
   border: none;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-/* Hover efekti za linkove */
 .nav-link:hover,
 .dropdown-button:hover {
-  color: #ff5722;
+  color: #ffd1b3;
 }
 
-/* Logout dugme - malo istaknutije */
 .logout-button {
-  background-color: #ff5722;
-  color: #fff;
+  background-color: #ffffff;
+  color: #ff5722;
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
+  border: 2px solid #ffffff;
+  transition: all 0.3s ease;
 }
 
 .logout-button:hover {
-  background-color: #e64a19;
+  background-color: #ffd1b3;
+  color: #ffffff;
 }
 
-/* Dropdown pozicija */
 .dropdown {
   position: relative;
 }
 
-/* Dropdown dugme (samo stil) */
 .dropdown-button {
   display: flex;
   align-items: center;
 }
 
-/* Dropdown meni */
 .dropdown-content {
   position: absolute;
   top: 110%;
@@ -125,14 +136,12 @@ body {
   z-index: 999;
 }
 
-/* Dropdown hover logika */
 .dropdown:hover .dropdown-content {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-/* Linkovi unutar dropdown-a */
 .dropdown-content a {
   display: block;
   padding: 0.75rem 1rem;
@@ -152,12 +161,17 @@ body {
   color: #ff5722;
 }
 
-/* Responsive podešavanja */
+/* Responsive za mobilne */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     align-items: flex-start;
     padding: 1rem;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    width: 100%;
   }
 
   .nav-link,
@@ -171,6 +185,7 @@ body {
     left: 0;
   }
 }
+
 
 /* Login.css */
 
@@ -417,7 +432,7 @@ body {
   font-family: 'Segoe UI', 'Roboto', sans-serif;
   font-size: 1rem;
   color: #555;
-  margin: 1.5rem 2rem 2rem 2rem;
+  margin: 0.5rem 1rem 1rem 1rem;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -443,7 +458,7 @@ body {
 
 /* Global container */
 .home-container {
-  padding: 40px 20px;
+  padding: 0px 20px;
   max-width: 1200px;
   margin: 0 auto;
   font-family: 'Poppins', sans-serif;
@@ -784,7 +799,7 @@ body {
   position: relative;
   width: 100%;
   height: 300px;
-  background-image: url('/public/images/cooking.jpg'); /* ovde stavi svoju sliku u public/images/ folder */
+  background-image: url('/public/images/cooking.jpg');
   background-size: cover;
   background-position: center;
   border-radius: 16px;
@@ -818,4 +833,86 @@ body {
   font-size: 1.1rem;
   max-width: 80%;
   line-height: 1.5;
+}
+
+/* Footer css */
+.footer {
+  background-color: #f44b0a;
+  color: #fff;
+  padding: 80px 100px;
+  margin-top: 40px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+}
+
+.footer-logo {
+  height: 60px;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding-right: 20px;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-icon {
+  color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.footer-icon:hover {
+  transform: scale(1.2);
+}
+
+.footer-top-button {
+  background-color: #fff;
+  color: #f44b0a;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.footer-top-button:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsive za male ekrane */
+@media (max-width: 600px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  .footer-right {
+    flex-direction: column;
+    gap: 20px;
+    padding-right: 0;
+    margin-top: 20px;
+  }
+
+  .footer-left {
+    padding-left: 0;
+  }
 }

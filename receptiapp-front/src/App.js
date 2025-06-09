@@ -1,6 +1,6 @@
 import './App.css';
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/NavBar';
 import Login from './components/Login';
 import Register from './components/Register';
@@ -11,19 +11,22 @@ import RecipeForm from './components/RecipeForm';
 import MyRecipes from './components/MyRecipes';
 import AdminPanel from './components/AdminPanel';
 import Breadcrumbs from './components/Breadcrumbs';
+import Footer from './components/Footer'
 
-function App() {
-  //cuvamo korisnika i njegove podatke 
+function AppWrapper() {
+  //cuvamo korisnika i njegove podatke
   const [user, setUser] = useState(() => {
     const stored = sessionStorage.getItem('user');
     return stored ? JSON.parse(stored) : null;
   });
 
+  const location = useLocation();
+
   return (
-    <Router>
-      {/* prosledjujemo kao parametar korisnika kako bismo odredili prikaz */}
+    <>
+    {/* prosledjujemo korisnika kako bismo odredili prikaz */}
       <Navbar user={user} setUser={setUser} />
-      <Breadcrumbs />
+      {location.pathname !== '/' && <Breadcrumbs />}
       <Routes>
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/moji-recepti" element={<MyRecipes />} />
@@ -35,6 +38,15 @@ function App() {
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
       </Routes>
+    <Footer/>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppWrapper />
     </Router>
   );
 }
