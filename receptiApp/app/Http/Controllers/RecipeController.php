@@ -418,4 +418,16 @@ class RecipeController extends Controller
         return response()->json($recipesByMonth);
     }
     
+    //pretrazivanje recepta po nazivu
+    public function searchByName(Request $request)
+    {
+        $search = $request->input('query');
+
+        $recipes = Recipe::with(['author', 'categories', 'ingredients'])
+            ->where('naziv', 'like', '%' . $search . '%')
+            ->get();
+
+        return RecipeResource::collection($recipes);
+    }
+
 }

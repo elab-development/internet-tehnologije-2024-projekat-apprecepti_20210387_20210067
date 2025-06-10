@@ -87,8 +87,10 @@ Route::get('/categories/{id}/recipes', [CategoryController::class, 'getRecipesBy
 Route::get('/recipes/popular', [RecipeController::class, 'popular']);//Prikaz recepta sa najvise pregeleda
 Route::get('/recipes/category/{id}', [RecipeController::class, 'filterByCategory']);
 Route::get('/recipes/filter-by-ingredients', [RecipeController::class, 'filterByIngredients']);//Parametre saljemo putem query-ja u body delu kako bi omogucili real-time i pretragu po VISE sastojka
+Route::get('/recipes/search', [RecipeController::class, 'searchByName']);//pretrazivanje recepata po nazivu
 Route::resource('/recipes', RecipeController::class)->only(['index', 'show']);
-Route::get('/ingredients/featured', [IngredientController::class, 'featured']);
+Route::get('/ingredients/featured', [IngredientController::class, 'featured']);//prikaz odredjenih sastojaka(ne svih)
+
 
 
 

@@ -186,6 +186,52 @@ body {
   }
 }
 
+.search-container {
+  position: relative;
+  margin-left: 1rem;
+}
+
+.search-input {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  border: none;
+  font-size: 0.9rem;
+  width: 180px;
+  outline: none;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  z-index: 999;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.search-result {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.search-result:hover {
+  background-color: #f9f9f9;
+  color: #ff5722;
+}
+
+@media (max-width: 768px) {
+  .search-input {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
 
 /* Login.css */
 
