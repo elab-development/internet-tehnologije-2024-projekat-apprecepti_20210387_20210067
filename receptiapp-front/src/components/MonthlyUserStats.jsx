@@ -60,7 +60,7 @@ const MonthlyUserStats = () => {
   }
 
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto' }}>
+    <div style={{ maxWidth: 600, margin: '0 auto' }}>
       <h3>Statistika: Registrovani korisnici po mesecu</h3>
       <Bar
         data={chartData}

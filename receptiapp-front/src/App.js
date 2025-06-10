@@ -23,7 +23,7 @@ function AppWrapper() {
   const location = useLocation();
 
   return (
-    <>
+    <div className="app-wrapper">
     {/* prosledjujemo korisnika kako bismo odredili prikaz */}
       <Navbar user={user} setUser={setUser} />
       {location.pathname !== '/' && <Breadcrumbs />}
@@ -39,7 +39,7 @@ function AppWrapper() {
         <Route path="/register" element={<Register setUser={setUser} />} />
       </Routes>
     <Footer/>
-    </>
+    </div>
   );
 }
 
