@@ -3,6 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
+import { Clock, Heart, Dumbbell } from 'lucide-react';
 
 const RecipeDetail = ({ user }) => {
   const { id } = useParams();
@@ -13,41 +14,35 @@ const RecipeDetail = ({ user }) => {
   const [error, setError] = useState('');
   const token = sessionStorage.getItem('token');
 
-  const fetchRecipe = () => {
-    axios.get(`/recipes/${id}`)
-      .then(res => {
-        const data = res.data.recipes || res.data;
-        setRecipe(data);
-      })
-      .catch(() => setError('Greška pri učitavanju recepta.'));
-  };
-
-  const checkIfFavorited = () => {
-    if (!token) {
-      setIsFavorited(false);
-      return;
-    }
-
-    axios.get(`/recipes/${id}/is-favorited`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then(res => {
-      setIsFavorited(res.data.is_favorited);
-    })
-    .catch(() => {
-      setIsFavorited(false);
-    });
-  };
-
   useEffect(() => {
     fetchRecipe();
-
     if (location.state?.isFavorited) {
       setIsFavorited(true);
     } else {
       checkIfFavorited();
     }
   }, [id]);
+
+  const fetchRecipe = async () => {
+    try {
+      const { data } = await axios.get(`/recipes/${id}`);
+      setRecipe(data.recipes ?? data);
+    } catch {
+      setError('Greška pri učitavanju recepta.');
+    }
+  };
+
+  const checkIfFavorited = async () => {
+    if (!token) return setIsFavorited(false);
+    try {
+      const { data } = await axios.get(`/recipes/${id}/is-favorited`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setIsFavorited(data.is_favorited);
+    } catch {
+      setIsFavorited(false);
+    }
+  };
 
   const handleFavorite = async () => {
     try {
@@ -72,82 +67,83 @@ const RecipeDetail = ({ user }) => {
   };
 
   const handleRating = async () => {
+    if (!rating || rating < 1 || rating > 5) return;
     try {
       await axios.post(`/recipes/${id}/rate`, { ocena: rating }, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert('Ocena uspešno poslata.');
+      
       fetchRecipe();
     } catch {
       alert('Greška pri ocenjivanju.');
     }
   };
 
-  if (error) return <p>{error}</p>;
-  if (!recipe) return <p>Učitavanje...</p>;
-
+  if (error) return <p className="error">{error}</p>;
+  if (!recipe) return <p className="loading">Učitavanje…</p>;
 
   return (
-    <div className="recipe-detail">
-      <h2>{recipe.naziv}</h2>
+    <div className="recipe-wrapper">
+      <div className="recipe-header">
+        <h1 className="recipe-title">{recipe.naziv}</h1>
+        <div className="recipe-tags">
+          {recipe.kategorije?.map((cat, i) => (
+            <span key={i} className="tag">{cat.naziv}</span>
+          ))}
+        </div>
+      </div>
 
-      {recipe.image && (
-  <div className="recipe-image">
-    <img src={recipe.image} alt={recipe.naziv} style={{ maxWidth: '400px', borderRadius: '8px' }} />
-  </div>
-)}
+      <div className="recipe-image-box">
+        <img src={recipe.image} alt={recipe.naziv} className="recipe-image" />
+      </div>
 
+      <div className="recipe-info-pillbox">
+        <span className="pill"><Dumbbell size={16} /> {recipe.tezina}</span>
+        <span className="pill"><Clock size={16} /> {recipe.vreme_pripreme}</span>
+        <span className="pill"><Heart size={16} color="#e60023" /> {recipe.omiljeno_korisnicima || 0}</span>
+      </div>
+      <div className="recipe-description-box">
+        <p className="recipe-description">{recipe.opis}</p>
+      </div>
 
-      <p>{recipe.opis}</p>
-      <p><strong>Težina:</strong> {recipe.tezina}</p>
-      <p><strong>Vreme pripreme:</strong> {recipe.vreme_pripreme} min</p>
+      <div className="recipe-ingredients-box">
+        <h2>Sastojci</h2>
+        <ul>
+          {recipe.sastojci?.map((ing, i) => (
+            <li key={i}><span className="ingredient-name">{ing.naziv}</span> - {ing.kolicina} {ing.mera}</li>
+          ))}
+        </ul>
+      </div>
 
-      <h4>Sastojci</h4>
-      <ul>
-        {recipe.sastojci?.map((ing, i) => (
-          <li key={i}>{ing.naziv} – {ing.kolicina} {ing.mera}</li>
-        ))}
-      </ul>
-
-      <h4>Kategorije</h4>
-      <ul>
-        {recipe.kategorije?.map((cat, i) => (
-          <li key={i}>{cat.naziv}</li>
-        ))}
-      </ul>
-
-      <p><strong>Prosečna ocena:</strong> {recipe.prosecna_ocena || 'N/A'}</p>
-      <p><strong>Omiljen kod:</strong> {recipe.omiljeno_korisnicima || 0} korisnika</p>
+      <div className="recipe-rating-box">
+        <div className="stars-display">Prosečna ocena: {recipe.prosecna_ocena || 'N/A'}</div>
+        <div className="stars-input">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <span key={star} onClick={() => setRating(star)} className={star <= rating ? 'star active' : 'star'}>
+              &#9733;
+            </span>
+          ))}
+          <button onClick={handleRating}>Pošalji ocenu</button>
+        </div>
+      </div>
 
       {user && (
-        <>
-          <hr />
-          <h4>Akcije</h4>
-
+        <div className="recipe-actions">
           {isFavorited ? (
-            <button onClick={handleUnfavorite}>Ukloni iz omiljenih</button>
+            <button className="btn-unfavorite" onClick={handleUnfavorite}>Ukloni iz omiljenih</button>
           ) : (
-            <button onClick={handleFavorite}>Dodaj u omiljene</button>
+            <button className="btn-favorite" onClick={handleFavorite}>Dodaj u omiljene</button>
           )}
-
-          <div>
-            <label>Ocenite recept (1–5):</label>
-            <input
-              type="number"
-              min="1"
-              max="5"
-              value={rating || ''}
-              onChange={(e) => setRating(Number(e.target.value))}
-            />
-            <button onClick={handleRating}>Pošalji ocenu</button>
-          </div>
-
-          <CommentForm recipeId={recipe.id} token={token} onCommentAdded={fetchRecipe} />
-        </>
+        </div>
       )}
 
-      <hr />
-      <CommentList comments={recipe.komentari} user={user} onRefresh={fetchRecipe} recipeId={recipe.id} />
+      <div className="recipe-comments">
+        <CommentForm recipeId={recipe.id} token={token} onCommentAdded={fetchRecipe} />
+        <br />
+        <br />
+        <br />
+        <CommentList comments={recipe.komentari} user={user} onRefresh={fetchRecipe} recipeId={recipe.id} />
+      </div>
     </div>
   );
 };

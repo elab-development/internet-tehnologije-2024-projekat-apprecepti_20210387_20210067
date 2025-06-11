@@ -670,139 +670,334 @@ body {
 
 
 /* recipeDetail css */
-.recipe-detail {
+/* Glavni kontejner */
+.recipe-wrapper {
   max-width: 800px;
-  margin: 30px auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  color: #222;
 }
 
-.recipe-detail h2 {
-  margin-bottom: 10px;
+/* Naslov i kategorije */
+.recipe-header {
+  margin-bottom: 1rem;
 }
 
-.recipe-detail ul {
-  list-style: disc;
-  padding-left: 20px;
+.recipe-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
 }
 
-.recipe-detail hr {
-  margin: 30px 0;
+.recipe-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-.comment-list {
-  margin-top: 20px;
+.tag {
+  background-color: #e5e5e5;
+  color: #222;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-weight: 500;
 }
 
-.comment-list ul {
-  padding: 0;
+/* Slika recepta */
+.recipe-image-box {
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.recipe-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+/* Informacije o receptu */
+.recipe-info-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin: 1rem 0 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Sastojci */
+.recipe-ingredients-box h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.recipe-ingredients-box ul {
   list-style: none;
+  padding-left: 0;
 }
 
-.comment-list li {
-  border-bottom: 1px solid #ccc;
-  padding: 10px 0;
+.recipe-ingredients-box li {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
 }
 
-.comment-list p {
-  margin: 0 0 5px;
-}
-
-.comment-list button {
-  margin-right: 10px;
-  padding: 5px 10px;
-  background-color: #eee;
-  border: none;
-  border-radius: 4px;
+.ingredient-name {
+  font-weight: 600;
+  text-decoration: underline;
   cursor: pointer;
 }
 
-.comment-list button:hover {
-  background-color: #ddd;
+/* Ocena sa zvezdicama */
+.recipe-rating-box {
+  margin-top: 2rem;
 }
 
-.comment-form {
-  margin-top: 30px;
+.stars-display {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
 }
 
-.comment-form textarea {
-  width: 100%;
-  height: 80px;
-  padding: 8px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  resize: vertical;
+.stars-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.comment-form button {
-  padding: 8px 12px;
-  background-color: #28a745;
+.star {
+  font-size: 1.8rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.star.active {
+  color: #ffcc00;
+}
+
+.stars-input button {
+  padding: 0.4rem 0.8rem;
+  background-color: #ff6600;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.comment-form button:hover {
-  background-color: #218838;
+.stars-input button:hover {
+  background-color: #e25500;
 }
 
-.comment-edit-form {
-  margin-top: 10px;
+/* Akcije */
+.recipe-actions {
+  margin-top: 2rem;
 }
 
-.comment-edit-form textarea {
-  width: 100%;
-  height: 80px;
-  padding: 8px;
-  margin-bottom: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  resize: vertical;
-}
-
-.comment-edit-form button {
-  padding: 6px 10px;
-  margin-right: 10px;
-  background-color: #007bff;
-  color: white;
+.btn-favorite,
+.btn-unfavorite {
+  background-color: #ff6600;
   border: none;
-  border-radius: 4px;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
+  margin-right: 1rem;
 }
 
-.comment-edit-form button:last-child {
-  background-color: #6c757d;
+.btn-unfavorite {
+  background-color: #999;
 }
 
-.comment-edit-form button:hover {
+.btn-favorite:hover,
+.btn-unfavorite:hover {
   opacity: 0.9;
 }
-.comment-form textarea {
-  width: 100%;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  resize: vertical;
-  margin-bottom: 8px;
+
+/* Komentari */
+.recipe-comments {
+  margin-top: 2.5rem;
+  border-top: 1px solid #ddd;
+  padding-top: 1.5rem;
 }
 
-.comment-form button {
-  padding: 6px 12px;
-  background-color: #28a745;
+/* Forma za komentar */
+.recipe-comments textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.recipe-comments button {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  float: right;
+  margin-top: 0.5rem;
+}
+
+.recipe-comments button:hover {
+  background-color: #e25500;
+}
+
+/* Komentar lista */
+.comment-item {
+  border-bottom: 1px solid #eee;
+  padding: 1rem 0;
+}
+
+.comment-item p {
+  margin: 0.3rem 0;
+}
+
+.comment-meta {
+  font-size: 0.85rem;
+  color: #666;
+}
+/* ====== NOVO: Opis recepta ====== */
+.recipe-description-box {
+  margin: 1rem 0 2rem;
+}
+
+.recipe-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #333;
+  max-width: 750px;
+}
+
+/* ====== NOVO: Info pill elementi (težina, vreme, omiljeno) ====== */
+.recipe-info-pillbox {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #f4f4f4;
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #222;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* ====== Komentari ====== */
+.recipe-comments {
+  margin-top: 3rem;
+  border-top: 1px solid #ddd;
+  padding-top: 2rem;
+}
+
+.recipe-comments h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* ====== Forma za komentar ====== */
+.recipe-comments textarea {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: vertical;
+  margin-bottom: 1rem;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.recipe-comments .comment-submit-btn {
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  float: right;
+}
+
+.recipe-comments .comment-submit-btn:hover {
+  background-color: #e25500;
+}
+
+/* ====== Jedan komentar ====== */
+.comment-item {
+  padding: 1rem ;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.comment-text {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.comment-author {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  display: block;
+  color: #111;
+}
+
+/* ====== Dugmad za izmenu i brisanje komentara ====== */
+.comment-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.comment-buttons button {
+  background-color: #ff6600;
   border: none;
   color: white;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
+  font-size: 0.9rem;
   cursor: pointer;
 }
 
-.comment-form button:hover {
-  background-color: #218838;
+.comment-buttons button:hover {
+  background-color: #e25500;
 }
+
+/* Poruke */
+.error,
+.loading {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}
+
+
 .cooking-tip-container {
   position: relative;
   width: 100%;
