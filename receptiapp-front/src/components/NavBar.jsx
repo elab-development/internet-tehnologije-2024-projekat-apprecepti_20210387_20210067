@@ -66,68 +66,69 @@ const Navbar = ({ user, setUser }) => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-left">
-        <Link to="/" className="logo-link">
-        <img src="/images/receptoria.png" alt="Logo" className="navbar-logo" />
-        </Link>
-      </div>
+  <div className="navbar-left">
+    <Link to="/" className="logo-link">
+      <img src="/images/receptoria.png" alt="Logo" className="navbar-logo" />
+    </Link>
+    <Link to="/" className="nav-link">Početna</Link>
 
-      <div className="navbar-links">
-        <Link to="/" className="nav-link">Početna</Link>
-
-        {!isLoggedIn && (
-          <>
-            <Link to="/login" className="nav-link">Login</Link>
-            <Link to="/register" className="nav-link">Register</Link>
-          </>
-        )}
-
-        {isLoggedIn && (
-          <>
-            <Link to="/favorites" className="nav-link">Omiljeni recepti</Link>
-            <div className="dropdown">
-              <button className="dropdown-button">Moji recepti ▾</button>
-              <div className="dropdown-content">
-                <Link to="/moji-recepti">Pregledaj</Link>
-                <Link to="/recipes/create">Dodaj novi</Link>
-              </div>
-            </div>
-            {role === 'admin' && (
-              <Link to="/admin" className="nav-link">Admin panel</Link>
-            )}
-            <button onClick={handleLogout} className="logout-button">Logout</button>
-          </>
-        )}
-        <div className="search-container" ref={dropdownRef}>
-            <input
-              type="text"
-              placeholder="Pretraži recepte..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-              onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
-            />
-            {showDropdown && searchResults.length > 0 && (
-              <div className="search-dropdown">
-                {searchResults.map((recipe) => (
-                  <div
-                    key={recipe.id}
-                    className="search-result"
-                    onClick={() => {
-                      navigate(`/recipes/${recipe.id}`);
-                      setSearchQuery('');
-                      setShowDropdown(false);
-                    }}
-                  >
-                    {recipe.naziv}
-                  </div>
-                ))}
-              </div>
-            )}
+    {isLoggedIn && (
+      <>
+        <Link to="/favorites" className="nav-link">Omiljeni recepti</Link>
+        <div className="dropdown">
+          <button className="dropdown-button">Moji recepti ▾</button>
+          <div className="dropdown-content">
+            <Link to="/moji-recepti">Pregledaj</Link>
+            <Link to="/recipes/create">Dodaj novi</Link>
           </div>
+        </div>
+        {role === 'admin' && (
+          <Link to="/admin" className="nav-link">Admin panel</Link>
+        )}
+      </>
+    )}
+  </div>
 
-      </div>
-    </nav>
+  <div className="navbar-right">
+    <div className="search-container" ref={dropdownRef}>
+      <input
+        type="text"
+        placeholder="Pretraži recepte..."
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="search-input"
+        onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
+      />
+      {showDropdown && searchResults.length > 0 && (
+        <div className="search-dropdown">
+          {searchResults.map((recipe) => (
+            <div
+              key={recipe.id}
+              className="search-result"
+              onClick={() => {
+                navigate(`/recipes/${recipe.id}`);
+                setSearchQuery('');
+                setShowDropdown(false);
+              }}
+            >
+              {recipe.naziv}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+
+    {!isLoggedIn ? (
+      <>
+        <Link to="/login" className="nav-link">Login</Link>
+        <Link to="/register" className="nav-link">Register</Link>
+      </>
+    ) : (
+      <button onClick={handleLogout} className="logout-button">Logout</button>
+    )}
+  </div>
+</nav>
+
   );
 };
 
