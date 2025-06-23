@@ -28,7 +28,8 @@ const Breadcrumbs = () => {
     recipes: 'Recepti',
     favorites: 'Omiljeni',
     create: 'Kreiraj',
-    edit:'Izmeni'
+    edit:'Izmeni',
+    'moji-recepti':'Moji recepti'
   };
 
   let path = '';

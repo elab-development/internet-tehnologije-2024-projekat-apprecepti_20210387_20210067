@@ -47,19 +47,8 @@ class RecipeController extends Controller
         return RecipeResource::collection($recipes);
     }
 
-
     public function store(Request $request)
     {
-        // Prvo dekodiramo nizove koji dolaze kao JSON stringovi
-        $decodedCategories = json_decode($request->input('categories'), true);
-        $decodedIngredients = json_decode($request->input('ingredients'), true);
-    
-        // Ručno modifikujemo zahtev da bi validacija radila kao do sada
-        $request->merge([
-            'categories' => $decodedCategories,
-            'ingredients' => $decodedIngredients
-        ]);
-    
         $validatedData = $request->validate([
             'naziv' => 'required|string|max:255',
             'opis' => 'required|string',
@@ -75,45 +64,93 @@ class RecipeController extends Controller
             'ingredients.*.kolicina' => 'required|numeric|min:1',
             'ingredients.*.mera' => 'required|string|max:20'
         ]);
-    
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('recipes', 'public');
-            $validatedData['image'] = $path;
+            $validatedData['image'] = $request->file('image')->store('recipes', 'public');
         }
-    
-        // Kreiramo recept
+
         $recipe = Recipe::create($validatedData);
-    
-        // Povezujemo recept sa kategorijama
-        if (!empty($decodedCategories)) {
-            $recipe->categories()->attach($decodedCategories);
+
+        if (!empty($request->categories)) {
+            $recipe->categories()->attach($request->categories);
         }
-    
-        // Povezujemo recept sa sastojcima
-        if (!empty($decodedIngredients)) {
-            foreach ($decodedIngredients as $ingredientData) {
-                $ingredientId = $ingredientData['id'] ?? null;
-                $ingredientNaziv = $ingredientData['naziv'] ?? null;
-    
+
+        if (!empty($request->ingredients)) {
+            foreach ($request->ingredients as $ingredient) {
+                $ingredientId = $ingredient['id'] ?? null;
+                $naziv = $ingredient['naziv'] ?? null;
+
                 if ($ingredientId) {
                     $recipe->ingredients()->attach($ingredientId, [
-                        'kolicina' => $ingredientData['kolicina'],
-                        'mera' => $ingredientData['mera']
+                        'kolicina' => $ingredient['kolicina'],
+                        'mera' => $ingredient['mera']
                     ]);
-                } elseif ($ingredientNaziv) {
-                    $newIngredient = Ingredient::firstOrCreate(['naziv' => $ingredientNaziv]);
+                } elseif ($naziv) {
+                    $newIngredient = Ingredient::firstOrCreate(['naziv' => $naziv]);
                     $recipe->ingredients()->attach($newIngredient->id, [
-                        'kolicina' => $ingredientData['kolicina'],
-                        'mera' => $ingredientData['mera']
+                        'kolicina' => $ingredient['kolicina'],
+                        'mera' => $ingredient['mera']
                     ]);
                 }
             }
         }
-    
+
         return new RecipeResource($recipe);
     }
-    
 
+    public function update(Request $request, $id)
+    {
+        $recipe = Recipe::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'naziv' => 'sometimes|string|max:255',
+            'opis' => 'sometimes|string',
+            'vreme_pripreme' => 'sometimes|integer|min:1',
+            'tezina' => 'sometimes|in:Lako,Srednje,Teško',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'categories' => 'array',
+            'categories.*' => 'exists:categories,id',
+            'ingredients' => 'array',
+            'ingredients.*.id' => 'nullable|exists:ingredients,id',
+            'ingredients.*.naziv' => 'nullable|string|max:255',
+            'ingredients.*.kolicina' => 'required|numeric|min:1',
+            'ingredients.*.mera' => 'required|string|max:20'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $validatedData['image'] = $request->file('image')->store('recipes', 'public');
+        }
+
+        $recipe->update($validatedData);
+
+        if (!empty($request->categories)) {
+            $recipe->categories()->sync($request->categories);
+        }
+
+        $recipe->ingredients()->detach();
+
+        if (!empty($request->ingredients)) {
+            foreach ($request->ingredients as $ingredient) {
+                $ingredientId = $ingredient['id'] ?? null;
+                $naziv = $ingredient['naziv'] ?? null;
+
+                if ($ingredientId) {
+                    $recipe->ingredients()->attach($ingredientId, [
+                        'kolicina' => $ingredient['kolicina'],
+                        'mera' => $ingredient['mera']
+                    ]);
+                } elseif ($naziv) {
+                    $newIngredient = Ingredient::firstOrCreate(['naziv' => $naziv]);
+                    $recipe->ingredients()->attach($newIngredient->id, [
+                        'kolicina' => $ingredient['kolicina'],
+                        'mera' => $ingredient['mera']
+                    ]);
+                }
+            }
+        }
+
+        return new RecipeResource($recipe);
+    }
 
     public function show($id)
     {
@@ -138,75 +175,7 @@ class RecipeController extends Controller
         return new RecipeResource($recipe);
     }
 
-    public function update(Request $request, $id)
-    {
-        $recipe = Recipe::findOrFail($id);
-    
-        // Prvo dekodiramo stringovane nizove koji dolaze iz FormData
-        $decodedCategories = json_decode($request->input('categories'), true);
-        $decodedIngredients = json_decode($request->input('ingredients'), true);
-    
-        // Merge-ujemo da bismo mogli lepo validirati
-        $request->merge([
-            'categories' => $decodedCategories,
-            'ingredients' => $decodedIngredients
-        ]);
-    
-        $validatedData = $request->validate([
-            'naziv' => 'sometimes|string|max:255',
-            'opis' => 'sometimes|string',
-            'vreme_pripreme' => 'sometimes|integer|min:1',
-            'tezina' => 'sometimes|in:Lako,Srednje,Teško',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'categories' => 'array',
-            'categories.*' => 'exists:categories,id',
-            'ingredients' => 'array',
-            'ingredients.*.id' => 'nullable|exists:ingredients,id',
-            'ingredients.*.naziv' => 'nullable|string|max:255',
-            'ingredients.*.kolicina' => 'required|numeric|min:1',
-            'ingredients.*.mera' => 'required|string|max:20'
-        ]);
-    
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('recipes', 'public');
-            $validatedData['image'] = $path;
-        }
-    
-        $recipe->update($validatedData);
-    
-        // Ažuriranje kategorija
-        if (!empty($decodedCategories)) {
-            $recipe->categories()->sync($decodedCategories);
-        }
-    
-        // Ažuriranje sastojaka
-        if (!empty($decodedIngredients)) {
-            $recipe->ingredients()->detach(); // obrišemo sve prethodne
-    
-            foreach ($decodedIngredients as $ingredientData) {
-                $ingredientId = $ingredientData['id'] ?? null;
-                $ingredientNaziv = $ingredientData['naziv'] ?? null;
-    
-                if ($ingredientId) {
-                    $recipe->ingredients()->attach($ingredientId, [
-                        'kolicina' => $ingredientData['kolicina'],
-                        'mera' => $ingredientData['mera']
-                    ]);
-                } elseif ($ingredientNaziv) {
-                    $newIngredient = Ingredient::firstOrCreate(['naziv' => $ingredientNaziv]);
-                    $recipe->ingredients()->attach($newIngredient->id, [
-                        'kolicina' => $ingredientData['kolicina'],
-                        'mera' => $ingredientData['mera']
-                    ]);
-                }
-            }
-        }
-    
-        return new RecipeResource($recipe);
-    }
-    
-
-
+   
     public function destroy($id)
     {
         try {
