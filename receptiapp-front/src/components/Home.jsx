@@ -18,7 +18,7 @@ const Home = () => {
       <CookingTip />
       
       <section className="popular-recipes-section">
-        <h2>Popularni recepti</h2>
+        <h2 className='popular-recipes-title'>Popularni recepti</h2>
         <div className="popular-recipe-list">
           {popularRecipes.length === 0
             ? <p>Nema popularnih recepata.</p>
@@ -27,8 +27,6 @@ const Home = () => {
             ))}
         </div>
       </section>
-
-      <hr />
 
       <section>
         <AllRecipes />

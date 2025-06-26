@@ -29,7 +29,8 @@ const Breadcrumbs = () => {
     favorites: 'Omiljeni',
     create: 'Kreiraj',
     edit:'Izmeni',
-    'moji-recepti':'Moji recepti'
+    'moji-recepti':'Moji recepti',
+   "search-results":"Pretraga"
   };
 
   let path = '';

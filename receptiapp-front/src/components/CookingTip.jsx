@@ -5,8 +5,7 @@ const CookingTip = () => {
   const [tip, setTip] = useState('');
   const [loading, setLoading] = useState(true);
 
-//poziv javnog servisa za prevodjenje 
-const translateText = async (text, from = 'en', to = 'sr') => {
+  const translateText = async (text, from = 'en', to = 'sr') => {
     try {
       const res = await axios.get('https://api.mymemory.translated.net/get', {
         params: {
@@ -14,7 +13,7 @@ const translateText = async (text, from = 'en', to = 'sr') => {
           langpair: `${from}|${to}`
         }
       });
-  
+
       return res.data.responseData.translatedText;
     } catch (error) {
       console.error('Greška pri prevođenju:', error.message);
@@ -22,17 +21,31 @@ const translateText = async (text, from = 'en', to = 'sr') => {
     }
   };
 
-  //poziv javnog servisa za generisanje random cinjenica vezanih za kulinarstvo
   useEffect(() => {
     const fetchTip = async () => {
-      try {
-        const res = await axios.get('https://api.spoonacular.com/food/trivia/random', {
-          params: { apiKey: 'f613f07ab7a34477860955c27d57e272' } // zameni sa tvojim ključem
-        });
+      let suitableTip = '';
+      let attempts = 0;
 
-        const originalText = res.data.text;
-        const translated = await translateText(originalText);
-        setTip(translated);
+      try {
+        while (!suitableTip && attempts < 10) {
+          const res = await axios.get('https://api.spoonacular.com/food/trivia/random', {
+            params: { apiKey: 'f613f07ab7a34477860955c27d57e272' }
+          });
+
+          const translated = await translateText(res.data.text);
+
+          if (translated && translated.length <= 120) {
+            suitableTip = translated;
+          }
+
+          attempts++;
+        }
+
+        if (suitableTip) {
+          setTip(suitableTip);
+        } else {
+          setTip('Nema dostupnog kratkog saveta.');
+        }
       } catch (error) {
         setTip('Greška pri učitavanju saveta.');
       } finally {
@@ -45,7 +58,7 @@ const translateText = async (text, from = 'en', to = 'sr') => {
 
   return (
     <div className="cooking-tip-container">
-      <div className="overlay">
+      <div className="tip-content">
         <h2>Da li ste znali</h2>
         {loading ? <p>Učitavanje...</p> : <p>{tip}</p>}
       </div>
