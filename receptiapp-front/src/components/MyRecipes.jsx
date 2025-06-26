@@ -58,7 +58,7 @@ const MyRecipes = () => {
     ) : (
       <div className="recipes-grid">
         {recipes.map(recipe => (
-          <div key={recipe.id} className="recipe-card">
+          <div key={recipe.id} className="recipe-card2">
             <h3 className="recipe-title">{recipe.naziv}</h3>
             <p><strong>Vreme pripreme:</strong> {recipe.vreme_pripreme} min</p>
             <p><strong>Težina:</strong> {recipe.tezina}</p>

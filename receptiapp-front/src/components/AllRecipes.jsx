@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useRef,useEffect, useState } from 'react';
 import axios from "axios";
 import RecipeCard from './RecipeCard';
 import usePagination from '../hooks/usePagination';
 
 const AllRecipes = () => {
+  const topRef = useRef(null);
   const [recipes, setRecipes] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [allIngredients, setAllIngredients] = useState([]);
@@ -18,6 +19,12 @@ const AllRecipes = () => {
     currentPage, setCurrentPage, lastPage, setLastPage, nextPage, prevPage
   } = usePagination();
 
+   const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    if (topRef.current) {
+      topRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
   useEffect(() => {
     // Učitaj kategorije
     axios.get('/categories')
@@ -119,8 +126,9 @@ const AllRecipes = () => {
   };
 
   return (
+     <div ref={topRef}>
     <div className="all-recipes">
-      <h2>Svi recepti</h2>
+      <h2 className='popular-recipes-title'>Svi recepti</h2>
 
       {/* FILTERI */}
       <div className="filters-container">
@@ -177,11 +185,11 @@ const AllRecipes = () => {
         )}
       </div>
 
-      {/* PAGINACIJA */}
+        {/* PAGINACIJA */}
       {lastPage > 1 && (
         <div className="pagination">
           <button
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+            onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1}
           >
             Prethodna
@@ -190,13 +198,14 @@ const AllRecipes = () => {
           <span>Strana {currentPage} od {lastPage}</span>
 
           <button
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, lastPage))}
+            onClick={() => handlePageChange(Math.min(currentPage + 1, lastPage))}
             disabled={currentPage === lastPage}
           >
             Sledeća
           </button>
         </div>
       )}
+    </div>
     </div>
   );
 };

@@ -30,7 +30,7 @@ const FavoriteRecipes = () => {
 
   return (
     <div className="favorites">
-      <h2>Omiljeni recepti</h2>
+      <h2 className='popular-recipes-title'>Omiljeni recepti</h2>
 
       {favorites.length === 0 ? (
         <p>Nemate nijedan omiljeni recept.</p>

@@ -1,9 +1,12 @@
 
 html, body, #root {
+  overflow-x: hidden;
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: 'Poppins';
 }
+
 
 .app-wrapper {
   display: flex;
@@ -16,7 +19,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  font-family: 'Poppins';
   margin: 0;
   padding: 0;
   background-color: #fdfdfd;
@@ -85,7 +88,7 @@ body {
   background-color: #ffffff;
   color: #ff5722;
   padding: 0.5rem 1rem;
-  border-radius: 8px;
+  border-radius: 20px;
   border: 2px solid #ffffff;
   transition: all 0.3s ease;
 }
@@ -186,7 +189,8 @@ body {
   border-radius: 20px;
   border: none;
   font-size: 0.9rem;
-  width: 180px;
+  width: 220px;
+  height: 27px;
   outline: none;
 }
 
@@ -493,10 +497,11 @@ body {
 }
 /* CSS za FavoriteRecipes komponentu */
 .favorites .recipe-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 .favorites .recipe-list .recipe-card {
   flex: 0 1 220px; /* bazna širina kartice je 220px */
@@ -504,6 +509,7 @@ body {
 
 /* Recipe Card osnovni stil */
 .recipe-card {
+  width: 280px;
   display: flex;
   flex-direction: column;
   border-radius: 20px;
@@ -552,12 +558,6 @@ body {
   padding: 0 20px;
 }
 
-.all-recipes h2 {
-  font-size: 32px;
-  font-weight: 600;
-  margin-bottom: 30px;
-  color: #333;
-}
 
 /* FILTERI */
 .filters-container {
@@ -642,6 +642,28 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 30px;
+}
+.popular-recipes-section{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+.popular-recipes-title {
+  display: inline-block;
+  background-color: #ff5722;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  padding: 0.4rem 2rem;
+  border-top-right-radius: 25px;
+  border-bottom-right-radius:25px ;
+  margin-bottom: 1rem;
+  margin-left: 0;
+  position: relative;
+  left: calc(-2rem);
+  margin-bottom: 40px;
+  margin-top: 40px;
+
 }
 
 /* PAGINACIJA */
@@ -1014,41 +1036,40 @@ body {
 .cooking-tip-container {
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 320px;
   background-image: url('/public/images/cooking.jpg');
   background-size: cover;
   background-position: center;
-  /* border-radius: px; */
   overflow: hidden;
-  margin: 0rem auto;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.5); /* tamni overlay preko slike */
-  color: white;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 1rem;
-  text-align: center;
+  justify-content: flex-start;
 }
 
-.overlay h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+.tip-content {
+  margin-left: 215px;
+  margin-bottom: 120px;
+  max-width: 350px;
+  text-align: left;
 }
 
-.overlay p {
-  font-size: 1.1rem;
-  max-width: 80%;
-  line-height: 1.5;
+.tip-content h2 {
+  font-size: 2.7rem;
+  color: #ff5722;
+  font-weight: 700;
+  margin-bottom: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.tip-content p {
+  background-color: #ff5722;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  margin-top: 0;
 }
 
 /* Footer css */
@@ -1894,7 +1915,7 @@ button.delete:hover {
   gap: 20px;
 }
 
-.recipe-card {
+.recipe-card2 {
   width: 250px;
   border: 1px solid #ddd;
   padding: 20px;
@@ -1948,3 +1969,28 @@ button.delete:hover {
     width: 100%;
   }
 }
+
+.search-button {
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding-left: 20px;
+  font-size: 1.1rem;
+}
+.search-results-page {
+  padding: 20px;
+}
+.search-icon {
+  font-size: 1.6rem;
+  position: relative;
+  top: 8px;
+}
+
+.recipe-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start; /* Ovo poravnava uz levu ivicu */
+}
+
