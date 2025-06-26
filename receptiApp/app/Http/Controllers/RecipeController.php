@@ -37,7 +37,7 @@ class RecipeController extends Controller
     {
         $recipes = Recipe::with('author')->get();
         //paginacija
-        return RecipeResource::collection(Recipe::paginate(10));
+        return RecipeResource::collection(Recipe::paginate(12));
     }
 
     //bez paginacije
@@ -202,7 +202,7 @@ class RecipeController extends Controller
     //Prikazuje najpopularnije recepte, njih 10(sortirane po pregledima)
     public function popular()
     {
-        $recipes = Recipe::orderByDesc('pregledi')->take(10)->get();
+        $recipes = Recipe::orderByDesc('pregledi')->take(4)->get();
         return RecipeResource::collection($recipes);
     }
 

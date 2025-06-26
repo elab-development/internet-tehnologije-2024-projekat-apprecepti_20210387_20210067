@@ -12,6 +12,7 @@ import MyRecipes from './components/MyRecipes';
 import AdminPanel from './components/AdminPanel';
 import Breadcrumbs from './components/Breadcrumbs';
 import Footer from './components/Footer'
+import SearchResults from './components/SearchResults';
 
 function AppWrapper() {
   //cuvamo korisnika i njegove podatke
@@ -37,6 +38,7 @@ function AppWrapper() {
         <Route path="/" element={<Home user={user} />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
         <Route path="/register" element={<Register setUser={setUser} />} />
+        <Route path="/recipes/search-results" element={<SearchResults />} />
       </Routes>
     <Footer/>
     </div>

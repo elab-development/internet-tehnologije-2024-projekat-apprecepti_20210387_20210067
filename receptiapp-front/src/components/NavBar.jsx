@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
 import { useEffect, useRef } from 'react';
+import { FaSearch } from 'react-icons/fa';
 
 const Navbar = ({ user, setUser }) => {
   //promenljiva koja cuva da li je korisnik ulogovan
@@ -99,6 +100,19 @@ const Navbar = ({ user, setUser }) => {
         className="search-input"
         onFocus={() => searchResults.length > 0 && setShowDropdown(true)}
       />
+      
+      <button
+        className="search-button"
+        onClick={() => {
+          if (searchQuery.trim() !== '') {
+            navigate(`/recipes/search-results?query=${encodeURIComponent(searchQuery)}`);
+            setShowDropdown(false);
+          }
+        }}
+      >
+        <FaSearch className="search-icon" />
+      </button>
+
       {showDropdown && searchResults.length > 0 && (
         <div className="search-dropdown">
           {searchResults.map((recipe) => (
@@ -117,6 +131,7 @@ const Navbar = ({ user, setUser }) => {
         </div>
       )}
     </div>
+
 
     {!isLoggedIn ? (
       <>
