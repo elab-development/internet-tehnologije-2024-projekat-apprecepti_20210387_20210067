@@ -8,6 +8,7 @@ const AllRecipes = () => {
   const [recipes, setRecipes] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [allIngredients, setAllIngredients] = useState([]);
+  const [ingredientMessage, setIngredientMessage] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
@@ -50,6 +51,7 @@ const AllRecipes = () => {
           .then(res => {
             const data = Array.isArray(res.data) ? res.data : res.data.data;
             setAllIngredients(data || []);
+            setIngredientMessage(''); // brišemo poruku
           });
       } else {
         // Ako korisnik kuca, pozivamo search backend
@@ -57,12 +59,22 @@ const AllRecipes = () => {
           .then(res => {
             const data = Array.isArray(res.data) ? res.data : res.data.data;
             setAllIngredients(data || []);
+            if (!data || data.length === 0) {
+              setIngredientMessage('Nema takvih sastojaka.');
+            } else {
+              setIngredientMessage('');
+            }
+          })
+          .catch(() => {
+            setAllIngredients([]);
+            setIngredientMessage('Greška pri pretrazi sastojaka.');
           });
       }
     }, 500); // debounce 500ms
-  
+
     return () => clearTimeout(delayDebounceFn);
   }, [ingredientSearch]);
+
   
 
   // Poziv na promenu filtera ili strane
@@ -161,6 +173,9 @@ const AllRecipes = () => {
           />
 
           <div className="ingredients-list">
+            {ingredientMessage && (
+              <p className="no-ingredients">{ingredientMessage}</p>
+            )}
             {allIngredients.map(ing => (
               <label 
                 key={ing.id}
@@ -171,6 +186,7 @@ const AllRecipes = () => {
               </label>
             ))}
           </div>
+
         </div>
       </div>
 
