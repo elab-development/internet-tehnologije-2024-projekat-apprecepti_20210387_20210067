@@ -59,7 +59,7 @@ const CookingTip = () => {
   return (
     <div className="cooking-tip-container">
       <div className="tip-content">
-        <h2>Da li ste znali</h2>
+        <h2>Da li ste znali?</h2>
         {loading ? <p>Učitavanje...</p> : <p>{tip}</p>}
       </div>
     </div>

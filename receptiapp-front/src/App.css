@@ -1994,3 +1994,67 @@ button.delete:hover {
   justify-content: flex-start; /* Ovo poravnava uz levu ivicu */
 }
 
+.recipe-info {
+  padding: 20px;
+  text-align: center;
+  
+}
+
+.recipe-info h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: #333;
+}
+.recipe-info-line {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.info-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  background-color: #f0f0f0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #444;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease;
+}
+
+.recipe-info-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: nowrap; /* ⛔ sprečava prelamanje u novi red */
+  overflow: hidden;   /* zaštita od prelivanja */
+  
+}
+
+.info-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  white-space: nowrap;
+  background: linear-gradient(to right, #fafafa, #f0f0f0);
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  color: #333;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+.recipe-card:hover .info-badge {
+  background: linear-gradient(to right, #f0f0f0, #e6e6e6);
+  transform: scale(1.04);
+}
+
