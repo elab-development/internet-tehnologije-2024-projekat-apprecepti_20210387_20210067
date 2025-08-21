@@ -1991,7 +1991,7 @@ button.delete:hover {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  justify-content: flex-start; /* Ovo poravnava uz levu ivicu */
+  justify-content: flex-start; 
 }
 
 .recipe-info {
@@ -2033,8 +2033,8 @@ button.delete:hover {
   align-items: center;
   gap: 12px;
   margin-top: 14px;
-  flex-wrap: nowrap; /* ⛔ sprečava prelamanje u novi red */
-  overflow: hidden;   /* zaštita od prelivanja */
+  flex-wrap: nowrap; 
+  overflow: hidden;  
   
 }
 

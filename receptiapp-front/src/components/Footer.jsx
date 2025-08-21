@@ -4,8 +4,15 @@ import { FaInstagram, FaFacebook, FaArrowUp } from 'react-icons/fa';
 
 const Footer = () => {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const rootElement = document.querySelector('#root');
+    if (rootElement) {
+      rootElement.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
+
+
 
   return (
     <footer className="footer">
