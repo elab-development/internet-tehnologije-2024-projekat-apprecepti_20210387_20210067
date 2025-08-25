@@ -54,7 +54,6 @@ class RecipeController extends Controller
             'opis' => 'required|string',
             'vreme_pripreme' => 'required|integer|min:1',
             'tezina' => 'required|in:Lako,Srednje,Teško',
-            'autor_id' => 'required|exists:users,id',
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'categories' => 'array',
             'categories.*' => 'exists:categories,id',
@@ -64,6 +63,8 @@ class RecipeController extends Controller
             'ingredients.*.kolicina' => 'required|numeric|min:1',
             'ingredients.*.mera' => 'required|string|max:20'
         ]);
+
+        $validatedData['autor_id'] = Auth::id();
 
         if ($request->hasFile('image')) {
             $validatedData['image'] = $request->file('image')->store('recipes', 'public');

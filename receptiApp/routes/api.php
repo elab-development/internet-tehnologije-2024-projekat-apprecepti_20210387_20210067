@@ -72,8 +72,8 @@ Route::middleware(['auth:sanctum', RoleMiddleware::class . ':user,admin'])->grou
 
 // SVE ULOGE(ADMIN, KORISNIK, GOST) IMAJU PRISTUP OVIM RUTAMA
 //Svi mogu videti sve sastojke i pretrazivati ih po imenu
-Route::get('/ingredients', [IngredientController::class, 'index']);
-Route::get('/ingredients/search', [IngredientController::class, 'search']);
+Route::get('/ingredients', [IngredientController::class, 'index']);//prikaz svih sastojaka
+Route::get('/ingredients/search', [IngredientController::class, 'search']);//pretraga sastojaka
 
 Route::get('/categories', [CategoryController::class, 'index']);// Svi mogu da vide sve dostupne kategorije
 Route::get('/recipes/{id}/comments', [CommentController::class, 'getCommentsForRecipe']);//Prikaz svih komentara recepta
